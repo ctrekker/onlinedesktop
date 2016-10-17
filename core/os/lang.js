@@ -156,6 +156,22 @@ function Line(x1, y1, x2, y2, sc, ss) {
     this.type=shape.type;
     this.data=shape.data;
 }
+function Text(text, x, y, data, fc, sc, ss) {
+    var font=data.font||Text.FONT;
+    var baseline=data.baseline||Text.BASELINE;
+    var shape=new Shape(ShapeType.TEXT, x, y, text, {font: font, baseline: baseline}, fc, sc, ss);
+    this.type=shape.type;
+    this.data=shape.data;
+}
+var TextBaseline={
+    TOP: "top",
+    BOTTOM: "bottom",
+    MIDDLE: "middle",
+    ALPHABETIC: "alphabetic",
+    HANGING: "hanging"
+};
+Text.FONT="12px Arial";
+Text.BASELINE=TextBaseline.TOP;
 addEventListener("message", function(e) {
     var data=e.data;
     var window=System.allWindows[data.windowID];
@@ -180,11 +196,22 @@ function Button(text, x, y, w, h) {
     w=w||Button.WIDTH;
     h=h||Button.HEIGHT;
 
+    this.text=text;
+    this.x=x;
+    this.y=y;
+    this.w=w;
+    this.h=h;
+
     this.component=new Component();
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, undefined, Button.STROKE, Button.OUTLINE);
     var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
+    var text=new Text(text, x, y, {
+        font: Button.FONT,
+        baseline: TextBaseline.TOP
+    }, "#000");
     this.component.add(box1);
     this.component.add(box2);
+    this.component.add(text);
     this.shapes=this.component.shapes;
 }
 Button.WIDTH=60;
@@ -192,6 +219,7 @@ Button.HEIGHT=20;
 Button.FILL="#EEE";
 Button.STROKE="#444";
 Button.OUTLINE=1;
+Button.FONT=Text.FONT;
 (function(){
     delete console;
     main();

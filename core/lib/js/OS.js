@@ -126,6 +126,9 @@ function program(args) {
                     var edata=element.data;
 
                     //Handle shape drawing
+                    if(edata.type=DT.TEXT) {
+                        gc.textBaseline=edata.h.baseline;
+                    }
                     if(defined(edata.fc)) {
                         gc.fillStyle=edata.fc;
                         switch(element.type) {

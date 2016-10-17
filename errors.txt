@@ -1,4 +1,0 @@
-1000:Error Error:Couldn't retrive error. Possible invalid errno
-1001:Missing Username/Password:Either the username or the password was not sent!
-1002:Blank Username/Password:Either the username or password entered was empty!
-1003:Unable to Validate Username/Password:There was a problem validating the username/password!

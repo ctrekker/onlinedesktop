@@ -475,6 +475,14 @@ function program(args) {
                 canvas.style.cursor="default";
             }
         }
+
+        var selWin=windows[windows.length-1];
+        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System.osWindowOptionsHeight&&e.y<selWin.y+selWin.height)) {
+            selWin.triggerEvent("mousemove", {
+                x: e.x-selWin.x,
+                y: e.y-selWin.y-System.osWindowOptionsHeight
+            });
+        }
     }
     window.onmouseup=function(e) {
         if (dragWindow!=null&&drag) {
@@ -490,10 +498,10 @@ function program(args) {
         
         var selWin=windows[windows.length-1];
         if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System.osWindowOptionsHeight&&e.y<selWin.y+selWin.height)) {
-            /*
-            Make sure to attach this to mouseup event on selWin
-            */
-            console.log("Mouse up!");
+            selWin.triggerEvent("mouseup", {
+                x: e.x-selWin.x,
+                y: e.y-selWin.y-System.osWindowOptionsHeight
+            });
         }
         drag=false;
     }

@@ -20,6 +20,7 @@ var System={
         this.height=o(height, null);
         this.title=o(title, "");
         this.graphics=new Graphics();
+        this.graphics.setWindow(this);
         this.id=System.windowID;
         System.windowID++;
 
@@ -37,6 +38,12 @@ var System={
         System.sendRaw({
             action: "System.Window.<init>",
             params: this.getSend()
+        });
+
+        this.event["any"].push(function(e) {
+            if(e.eventType.contains("mouse")) {
+                
+            }
         });
     },
     allWindows: []
@@ -102,10 +109,17 @@ function Graphics() {
 
         ]
     };
+    this.window=null;
+    this.event={
+        "any": []
+    };
 }
 Graphics.prototype={
     setBackground: function(color) {
         this.data.bg=color;
+    },
+    setWindow: function(window) {
+        this.window=window;
     },
     add: function(shape) {
         this.data.elements.push(shape);
@@ -113,6 +127,22 @@ Graphics.prototype={
     addComponent: function(component) {
         for(var i=0; i<component.shapes.length; i++) {
             this.data.elements.push(component.shapes[i]);
+        }
+    },
+    addEventListener: function(name, callback) {
+        if(this.event[name]=='undefined') {
+            this.event[name]=[];
+        }
+        this.event[name].push(callback);
+    },
+    triggerEvent: function(name, data) {
+        data.eventType=name;
+        data.component=this;
+        for(var i=0; i<this.event[name].length; i++) {
+            this.event[name][i](data);
+        }
+        for(var i=0; i<this.event["any"].length; i++) {
+            this.event["any"][i](data);
         }
     }
 };
@@ -195,11 +225,35 @@ addEventListener("message", function(e) {
     }
 });
 function Component(sdata) {
-    this.shapes=sdata||[];
+    this.shapes=System.favor(sdata, []);
+    this.graphics=null;
+    this.event={
+        "any": []
+    };
 }
 Component.prototype={
+    setGraphics: function(graphics) {
+        this.graphics=graphics;
+        console.log(this);
+    },
     add: function(shape) {
         this.shapes.push(shape);
+    },
+    addEventListener: function(name, callback) {
+        if(this.event[name]=='undefined') {
+            this.event[name]=[];
+        }
+        this.event[name].push(callback);
+    },
+    triggerEvent: function(name, data) {
+        data.eventType=name;
+        data.component=this;
+        for(var i=0; i<this.event[name].length; i++) {
+            this.event[name][i](data);
+        }
+        for(var i=0; i<this.event["any"].length; i++) {
+            this.event["any"][i](data);
+        }
     }
 };
 function Button(text, x, y, w, h) {
@@ -215,23 +269,27 @@ function Button(text, x, y, w, h) {
     this.component=new Component();
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, undefined, Button.STROKE, Button.OUTLINE);
     var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
-    var text=new Text(text, x, y, {
+    var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
         font: Button.FONT,
-        baseline: TextBaseline.TOP,
-        align: TextAlign.CENTER
+        baseline: Button.BASELINE,
+        align: Button.ALIGN
     }, "#000");
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
     this.shapes=this.component.shapes;
+
+    console.log(this.graphics);
 }
+Button.prototype=Component.prototype;
 Button.WIDTH=60;
 Button.HEIGHT=20;
 Button.FILL="#EEE";
 Button.STROKE="#444";
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
+Button.BASELINE=TextBaseline.MIDDLE;
+Button.ALIGN=TextAlign.CENTER;
 (function(){
-    delete console;
     main();
 }());

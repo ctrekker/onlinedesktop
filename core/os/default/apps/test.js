@@ -4,7 +4,9 @@ function main() {
     g.add(new Shape(ShapeType.RECTANGLE, 0, 0, 50, 50, "#000"));
     g.add(new Shape(ShapeType.ELLIPSE, 55, 0, 50, 50, "#000"));   
     g.add(new Line(0, 55, 50, 105, "#000")); 
-    g.add(new Shape(ShapeType.TEXT, 55, 55, "Hello, World!", {font:"14px Arial"}, "#000"));  
-    g.addComponent(new Button("OK", 100, 100));                                                                                                                                      
+    g.add(new Shape(ShapeType.TEXT, 55, 55, "Hello, World!", {font:"14px Arial"}, "#000"));
+    var button=new Button("OK", 100, 100);
+      
+    g.addComponent(button);                                                                                                                                      
     window.show();
 }

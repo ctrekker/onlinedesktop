@@ -157,12 +157,21 @@ function Line(x1, y1, x2, y2, sc, ss) {
     this.data=shape.data;
 }
 function Text(text, x, y, data, fc, sc, ss) {
-    var font=data.font||Text.FONT;
-    var baseline=data.baseline||Text.BASELINE;
-    var shape=new Shape(ShapeType.TEXT, x, y, text, {font: font, baseline: baseline}, fc, sc, ss);
+    var o=System.favor;
+    var font=o(data.font, Text.FONT);
+    var baseline=o(data.baseline, Text.BASELINE);
+    var align=o(data.align, Text.ALIGN);
+    var shape=new Shape(ShapeType.TEXT, x, y, text, {font: font, baseline: baseline, align: align}, fc, sc, ss);
     this.type=shape.type;
     this.data=shape.data;
 }
+var TextAlign={
+    START: "start",
+    END: "end",
+    LEFT: "left",
+    CENTER: "center",
+    RIGHT: "right"
+};
 var TextBaseline={
     TOP: "top",
     BOTTOM: "bottom",
@@ -172,6 +181,7 @@ var TextBaseline={
 };
 Text.FONT="12px Arial";
 Text.BASELINE=TextBaseline.TOP;
+Text.ALIGN=TextAlign.LEFT;
 addEventListener("message", function(e) {
     var data=e.data;
     var window=System.allWindows[data.windowID];
@@ -207,7 +217,8 @@ function Button(text, x, y, w, h) {
     var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
     var text=new Text(text, x, y, {
         font: Button.FONT,
-        baseline: TextBaseline.TOP
+        baseline: TextBaseline.TOP,
+        align: TextAlign.CENTER
     }, "#000");
     this.component.add(box1);
     this.component.add(box2);

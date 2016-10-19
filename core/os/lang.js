@@ -20,7 +20,6 @@ var System={
         this.height=o(height, null);
         this.title=o(title, "");
         this.graphics=new Graphics();
-        this.graphics.setWindow(this);
         this.id=System.windowID;
         System.windowID++;
 
@@ -38,12 +37,6 @@ var System={
         System.sendRaw({
             action: "System.Window.<init>",
             params: this.getSend()
-        });
-
-        this.event["any"].push(function(e) {
-            if(e.eventType.contains("mouse")) {
-                
-            }
         });
     },
     allWindows: []
@@ -109,14 +102,14 @@ function Graphics() {
 
         ]
     };
+<<<<<<< HEAD
     this.window=null;
+=======
+>>>>>>> parent of 68bbc79... Started support for Component events
 }
 Graphics.prototype={
     setBackground: function(color) {
         this.data.bg=color;
-    },
-    setWindow: function(window) {
-        this.window=window;
     },
     add: function(shape) {
         this.data.elements.push(shape);
@@ -206,8 +199,12 @@ addEventListener("message", function(e) {
     }
 });
 function Component(sdata) {
+<<<<<<< HEAD
     this.shapes=System.favor(sdata, []);
     this.graphics=null;
+=======
+    this.shapes=sdata||[];
+>>>>>>> parent of 68bbc79... Started support for Component events
 }
 Component.prototype={
     add: function(shape) {
@@ -227,27 +224,23 @@ function Button(text, x, y, w, h) {
     this.component=new Component();
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, undefined, Button.STROKE, Button.OUTLINE);
     var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
-    var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
+    var text=new Text(text, x, y, {
         font: Button.FONT,
-        baseline: Button.BASELINE,
-        align: Button.ALIGN
+        baseline: TextBaseline.TOP,
+        align: TextAlign.CENTER
     }, "#000");
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
     this.shapes=this.component.shapes;
-
-    console.log(this.graphics);
 }
-Button.prototype=Component.prototype;
 Button.WIDTH=60;
 Button.HEIGHT=20;
 Button.FILL="#EEE";
 Button.STROKE="#444";
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
-Button.BASELINE=TextBaseline.MIDDLE;
-Button.ALIGN=TextAlign.CENTER;
 (function(){
+    delete console;
     main();
 }());

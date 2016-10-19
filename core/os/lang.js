@@ -102,16 +102,7 @@ function Graphics() {
 
         ]
     };
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     this.window=null;
-=======
->>>>>>> parent of 68bbc79... Started support for Component events
-=======
->>>>>>> parent of 68bbc79... Started support for Component events
-=======
->>>>>>> parent of 68bbc79... Started support for Component events
 }
 Graphics.prototype={
     setBackground: function(color) {
@@ -205,20 +196,7 @@ addEventListener("message", function(e) {
     }
 });
 function Component(sdata) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     this.shapes=System.favor(sdata, []);
-    this.graphics=null;
-=======
-    this.shapes=sdata||[];
->>>>>>> parent of 68bbc79... Started support for Component events
-=======
-    this.shapes=sdata||[];
->>>>>>> parent of 68bbc79... Started support for Component events
-=======
-    this.shapes=sdata||[];
->>>>>>> parent of 68bbc79... Started support for Component events
 }
 Component.prototype={
     add: function(shape) {
@@ -238,9 +216,9 @@ function Button(text, x, y, w, h) {
     this.component=new Component();
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, undefined, Button.STROKE, Button.OUTLINE);
     var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
-    var text=new Text(text, x, y, {
+    var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
         font: Button.FONT,
-        baseline: TextBaseline.TOP,
+        baseline: TextBaseline.MIDDLE,
         align: TextAlign.CENTER
     }, "#000");
     this.component.add(box1);

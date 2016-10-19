@@ -104,7 +104,10 @@ function Graphics() {
     };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.window=null;
+=======
+>>>>>>> parent of 68bbc79... Started support for Component events
 =======
 >>>>>>> parent of 68bbc79... Started support for Component events
 =======
@@ -204,8 +207,12 @@ addEventListener("message", function(e) {
 function Component(sdata) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.shapes=System.favor(sdata, []);
     this.graphics=null;
+=======
+    this.shapes=sdata||[];
+>>>>>>> parent of 68bbc79... Started support for Component events
 =======
     this.shapes=sdata||[];
 >>>>>>> parent of 68bbc79... Started support for Component events

@@ -41,7 +41,9 @@ var System={
         });
 
         this.event["any"].push(function(e) {
-            this.graphics.triggerEvent(e.eventType, e);
+            if(e.eventType.contains("mouse")) {
+                
+            }
         });
     },
     allWindows: []
@@ -98,16 +100,6 @@ System.Window.prototype={
     //ADDS
     addEventListener: function(name, callback) {
         this.event[name].push(callback);
-    },
-    triggerEvent: function(name, data) {
-        data.eventType=name;
-        data.window=this;
-        for(var i=0; i<this.event[name].length; i++) {
-            this.event[name][i](data);
-        }
-        for(var i=0; i<this.event["any"].length; i++) {
-            this.event["any"][i](data);
-        }
     }
 };
 function Graphics() {
@@ -145,7 +137,7 @@ Graphics.prototype={
     },
     triggerEvent: function(name, data) {
         data.eventType=name;
-        data.graphics=this;
+        data.component=this;
         for(var i=0; i<this.event[name].length; i++) {
             this.event[name][i](data);
         }

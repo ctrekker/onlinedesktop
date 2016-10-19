@@ -110,9 +110,6 @@ function Graphics() {
         ]
     };
     this.window=null;
-    this.event={
-        "any": []
-    };
 }
 Graphics.prototype={
     setBackground: function(color) {
@@ -127,22 +124,6 @@ Graphics.prototype={
     addComponent: function(component) {
         for(var i=0; i<component.shapes.length; i++) {
             this.data.elements.push(component.shapes[i]);
-        }
-    },
-    addEventListener: function(name, callback) {
-        if(this.event[name]=='undefined') {
-            this.event[name]=[];
-        }
-        this.event[name].push(callback);
-    },
-    triggerEvent: function(name, data) {
-        data.eventType=name;
-        data.component=this;
-        for(var i=0; i<this.event[name].length; i++) {
-            this.event[name][i](data);
-        }
-        for(var i=0; i<this.event["any"].length; i++) {
-            this.event["any"][i](data);
         }
     }
 };
@@ -227,33 +208,10 @@ addEventListener("message", function(e) {
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
     this.graphics=null;
-    this.event={
-        "any": []
-    };
 }
 Component.prototype={
-    setGraphics: function(graphics) {
-        this.graphics=graphics;
-        console.log(this);
-    },
     add: function(shape) {
         this.shapes.push(shape);
-    },
-    addEventListener: function(name, callback) {
-        if(this.event[name]=='undefined') {
-            this.event[name]=[];
-        }
-        this.event[name].push(callback);
-    },
-    triggerEvent: function(name, data) {
-        data.eventType=name;
-        data.component=this;
-        for(var i=0; i<this.event[name].length; i++) {
-            this.event[name][i](data);
-        }
-        for(var i=0; i<this.event["any"].length; i++) {
-            this.event["any"][i](data);
-        }
     }
 };
 function Button(text, x, y, w, h) {

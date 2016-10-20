@@ -63,7 +63,6 @@ function program(args) {
             }
         ]
     });
-    //windows.push(new ConsoleWindow(app));
     new Window(10, 10, 200, 100, "Test");
     new Window(100, 100, 200, 100, "Test2");
     windows[windows.length-1].addEventListener("mousedown", function(e) {

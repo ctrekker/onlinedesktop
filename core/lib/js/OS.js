@@ -128,7 +128,6 @@ function program(args) {
                     //Handle shape drawing
                     if(element.type==DT.TEXT) {
                         gc.textBaseline=edata.h.baseline;
-                        console.log(edata.h.align);
                         gc.textAlign=edata.h.align;
                     }
                     if(defined(edata.fc)) {

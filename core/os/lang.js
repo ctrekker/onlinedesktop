@@ -197,11 +197,32 @@ addEventListener("message", function(e) {
 });
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
+    this.id=Component.ID++;
 }
 Component.prototype={
     add: function(shape) {
         this.shapes.push(shape);
+    },
+    addEventListener: function(name, callback) {
+        var func;
+        if(typeof callback=="string") {
+            console.log("string");
+            func=self[callback];
+        }
+        else if(typeof callback=="function") {
+            console.log("function");
+            func=callback;
+        }
+        if(typeof ComponentEvents[name]=='undefined') {
+            ComponentEvents[name]=[];
+        }
+        ComponentEvents[name].push(func);
+        console.log(ComponentEvents);
     }
+};
+Component.ID=0;
+var ComponentEvents={
+    "any": []
 };
 function Button(text, x, y, w, h) {
     w=w||Button.WIDTH;
@@ -224,7 +245,13 @@ function Button(text, x, y, w, h) {
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
+    this.component.addEventListener("click", function(e) {
+        console.log("Clicked!");
+    });
     this.shapes=this.component.shapes;
+
+    this.event={};
+    console.log(self);
 }
 Button.WIDTH=60;
 Button.HEIGHT=20;
@@ -233,6 +260,6 @@ Button.STROKE="#444";
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
 (function(){
-    delete console;
+    //delete console;
     main();
 }());

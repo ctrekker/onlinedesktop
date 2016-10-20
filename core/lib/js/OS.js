@@ -88,7 +88,7 @@ function program(args) {
                 //Fill window content
                 c.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
                 c.fillRect(window.x, window.y+System.osWindowOptionsHeight, window.width, window.height-System.osWindowOptionsHeight);
-
+                
                 //Draw window icon
                 try {
                     c.drawImage(window.icon, window.x+System.osWindowOptionsPadding, window.y+System.osWindowOptionsHeight/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
@@ -96,7 +96,7 @@ function program(args) {
                 catch(e) {
                     window.icon=Image.getIcon(System.osApplicationIcon);
                 }
-
+                
                 //Create cropping canvas
                 var wcanvas=document.createElement("canvas");
                 wcanvas.width=window.width;
@@ -109,7 +109,7 @@ function program(args) {
                 wc.fillText(window.title, System.osWindowOptionsPadding+System.osWindowIconWidth+System.osWindowOptionsTitleIconSeperation, System.osWindowOptionsHeight/2);
                 //Draw content
                 wc.textBaseline="top";
-
+                
                 //NEW CONTENT COMPILER HERE!!!
                 var start=System.osWindowOptionsHeight;
 
@@ -118,7 +118,7 @@ function program(args) {
                 gcanvas.width=window.width;
                 gcanvas.height=window.height-System.osWindowOptionsHeight;
                 var gc=gcanvas.getContext("2d");
-
+                
                 //##### 2 #####
                 for(var n=0; n<window.gdata.elements.length; n++) {
                     var element=window.gdata.elements[n];
@@ -173,9 +173,11 @@ function program(args) {
                         }
                     }
                 }
-                wc.drawImage(gcanvas, 0, System.osWindowOptionsHeight);
-                c.drawImage(wcanvas, window.x, window.y);
-
+                
+                //wc.drawImage(gcanvas, 0, System.osWindowOptionsHeight);
+                //MEMORY LEAK HERE!!!
+                //c.drawImage(wcanvas, window.x, window.y);
+                
                 //Stroke window border
                 c.strokeStyle=System.osWindowBorder;
                 c.lineWidth=System.osWindowBorderWidth;

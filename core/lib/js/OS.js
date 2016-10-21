@@ -262,7 +262,6 @@ function program(args) {
     var clickX=0;
     var clickY=0;
     window.onmousedown=function(e) {
-        console.log(windows);
         clickX=e.x;
         clickY=e.y;
         var clickedOn="";
@@ -289,8 +288,9 @@ function program(args) {
                             dragOffX=e.x-w.x;
                             dragOffY=e.y-w.y;
                         }
-
+                        console.log(windows);
                         windows=windows.remove(i);
+                        console.log(windows);
                         windows.push(w);
                         
                         //cw stands for Current Window
@@ -778,7 +778,7 @@ function defined(val) {
 }
 //NOTE: This window does not return the actual Window object, but the index of the window object inside of the array/list
 function findWindowInArray(id, list) {
-    for(var i=0; i<list.length; i++) {
+    for(var i=list.length-1; i>=0; i--) {
         if(list[i].id==id) {
             return i;
         }

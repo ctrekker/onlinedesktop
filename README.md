@@ -1,6 +1,6 @@
 # onlinedesktop
 
-[![Join the chat at https://gitter.im/onlinedesktop/Lobby](https://badges.gitter.im/onlinedesktop/Lobby.svg)](https://gitter.im/onlinedesktop/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/onlinedesktop/Lobby](https://badges.gitter.im/onlinedesktop/Lobby.svg)](https://gitter.im/onlinedesktop/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 A desktop that can be accessed from anywhere!
 
 This program, being a web application is built primarly with JavaScript. Some internal PHP code is used for user tracking (sign-ins) and 

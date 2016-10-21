@@ -82,26 +82,44 @@ function program(args) {
             //Window
             var window=windows[i];
             if(window.shown) {
+                //Create cropping canvas
+                var wcanvas=document.getElementById("wcanvas_"+window.id);
+                if(wcanvas==null) {
+                    wcanvas=document.createElement("canvas");
+                    wcanvas.setAttribute("class", "dynamic-canvas");
+                    wcanvas.setAttribute("id", "wcanvas_"+window.id);
+                    document.body.appendChild(wcanvas);
+                }
+                wcanvas.width=window.width;
+                wcanvas.height=window.height;
+                var wc=wcanvas.getContext("2d");
+
+                var gcanvas=document.getElementById("gcanvas_"+window.id);
+                if(gcanvas==null) {
+                    gcanvas=document.createElement("canvas");
+                    gcanvas.setAttribute("class", "dynamic-canvas");
+                    gcanvas.setAttribute("id", "gcanvas_"+window.id);
+                    document.body.appendChild(gcanvas);
+                }
+                gcanvas.width=window.width;
+                gcanvas.height=window.height-System.osWindowOptionsHeight;
+                var gc=gcanvas.getContext("2d");
+
                 //Fill window options
-                c.fillStyle=System.osWindowOptionsBackground;
-                c.fillRect(window.x, window.y, window.width, System.osWindowOptionsHeight);
+                wc.fillStyle=System.osWindowOptionsBackground;
+                wc.fillRect(0, 0, window.width, System.osWindowOptionsHeight);
                 //Fill window content
-                c.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
-                c.fillRect(window.x, window.y+System.osWindowOptionsHeight, window.width, window.height-System.osWindowOptionsHeight);
+                wc.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
+                wc.fillRect(0, System.osWindowOptionsHeight, window.width, window.height-System.osWindowOptionsHeight);
                 
                 //Draw window icon
                 try {
-                    c.drawImage(window.icon, window.x+System.osWindowOptionsPadding, window.y+System.osWindowOptionsHeight/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
+                    wc.drawImage(window.icon, System.osWindowOptionsPadding, System.osWindowOptionsHeight/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
                 }
                 catch(e) {
                     window.icon=Image.getIcon(System.osApplicationIcon);
                 }
-                
-                //Create cropping canvas
-                var wcanvas=document.createElement("canvas");
-                wcanvas.width=window.width;
-                wcanvas.height=window.height;
-                var wc=wcanvas.getContext("2d");
+            
                 wc.font=System.osWindowContentFont;
                 //Draw title text
                 wc.textBaseline="middle";
@@ -114,10 +132,7 @@ function program(args) {
                 var start=System.osWindowOptionsHeight;
 
                 //##### 1 #####
-                var gcanvas=document.createElement("canvas");
-                gcanvas.width=window.width;
-                gcanvas.height=window.height-System.osWindowOptionsHeight;
-                var gc=gcanvas.getContext("2d");
+                //Located at top
                 
                 //##### 2 #####
                 for(var n=0; n<window.gdata.elements.length; n++) {
@@ -173,22 +188,21 @@ function program(args) {
                         }
                     }
                 }
-                
-                //wc.drawImage(gcanvas, 0, System.osWindowOptionsHeight);
-                //MEMORY LEAK HERE!!!
-                //c.drawImage(wcanvas, window.x, window.y);
+                var zIndex="z-index: "+findWindowInArray(window.id, windows);
+                gcanvas.setAttribute("style", "left: "+window.x+"px; top: "+(System.osWindowOptionsHeight+window.y)+"px; "+zIndex);
+                wcanvas.setAttribute("style", "left: "+window.x+"px; top: "+window.y+"px; "+zIndex);
                 
                 //Stroke window border
-                c.strokeStyle=System.osWindowBorder;
-                c.lineWidth=System.osWindowBorderWidth;
-                c.strokeRect(window.x, window.y, window.width, window.height);
+                wc.strokeStyle=System.osWindowBorder;
+                wc.lineWidth=System.osWindowBorderWidth;
+                wc.strokeRect(0, 0, window.width, window.height);
                 //Stroke window options border
-                c.strokeStyle=System.osWindowOptionsBorder;
-                c.lineWidth=System.osWindowOptionsBorderWidth;
-                c.beginPath();
-                c.moveTo(window.x, window.y+System.osWindowOptionsHeight);
-                c.lineTo(window.x+window.width, window.y+System.osWindowOptionsHeight);
-                c.stroke();
+                wc.strokeStyle=System.osWindowOptionsBorder;
+                wc.lineWidth=System.osWindowOptionsBorderWidth;
+                wc.beginPath();
+                wc.moveTo(0, System.osWindowOptionsHeight);
+                wc.lineTo(window.width, System.osWindowOptionsHeight);
+                wc.stroke();
             }
         }
         firstTime=false;
@@ -274,8 +288,9 @@ function program(args) {
                             dragOffX=e.x-w.x;
                             dragOffY=e.y-w.y;
                         }
-
+                        console.log(windows);
                         windows=windows.remove(i);
+                        console.log(windows);
                         windows.push(w);
                         
                         //cw stands for Current Window
@@ -430,54 +445,55 @@ function program(args) {
                 }
             }
             disabledList.pop();
+            var body=document.body;
             for(var i=windows.length-1; i>=0; i--) {
                 if(disabledList.indexOf(i)==-1) {
                     var w=windows[i];
                     var margin=System.osWindowResizeMargin;
                     //Condition LEFT
                     if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
-                        canvas.style.cursor="w-resize";
+                        body.style.cursor="w-resize";
                         changed=true;
                     }
                     //Condition RIGHT
                     else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
-                        canvas.style.cursor="e-resize";
+                        body.style.cursor="e-resize";
                         changed=true;
                     }
                     //Condition TOP
                     else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y&&e.y<w.y+margin)) {
-                        canvas.style.cursor="n-resize";
+                        body.style.cursor="n-resize";
                         changed=true;
                     }
                     //Condition BOTTOM
                     else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
-                        canvas.style.cursor="s-resize";
+                        body.style.cursor="s-resize";
                         changed=true;
                     }
                     //Condition TOP_LEFT
                     else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y&&e.y<w.y+margin)) {
-                        canvas.style.cursor="nw-resize";
+                        body.style.cursor="nw-resize";
                         changed=true;
                     }
                     //Condition TOP_RIGHT
                     else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y&&e.y<w.y+margin)) {
-                        canvas.style.cursor="ne-resize";
+                        body.style.cursor="ne-resize";
                         changed=true;
                     }
                     //Condition BOTTOM_LEFT
                     else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
-                        canvas.style.cursor="sw-resize";
+                        body.style.cursor="sw-resize";
                         changed=true;
                     }
                     //Condition BOTTOM_RIGHT
                     else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
-                        canvas.style.cursor="se-resize";
+                        body.style.cursor="se-resize";
                         changed=true;
                     }
                 }
             }
             if(!changed) {
-                canvas.style.cursor="default";
+                body.style.cursor="default";
             }
         }
 
@@ -759,6 +775,14 @@ String.prototype.fromHex = function(){
 }
 function defined(val) {
     return !(typeof val == "undefined"||val == null);
+}
+//NOTE: This window does not return the actual Window object, but the index of the window object inside of the array/list
+function findWindowInArray(id, list) {
+    for(var i=list.length-1; i>=0; i--) {
+        if(list[i].id==id) {
+            return i;
+        }
+    }
 }
 
 

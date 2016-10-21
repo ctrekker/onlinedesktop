@@ -23,6 +23,9 @@
                 margin: 0px;
                 overflow: hidden;
             }
+            .dynamic-canvas {
+                position: absolute;
+            }
         </style>
         <script src="../core/lib/js/jquery.min.js"></script>
         <script type="text/javascript" src="../core/lib/js/OS.js"></script>

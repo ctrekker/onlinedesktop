@@ -199,8 +199,8 @@ addEventListener("message", function(e) {
         var combined=ComponentEvents[data.eventType].concat(ComponentEvents["any"]);
         for(var i=0; i<combined.length; i++) {
             var selComponent=combined[i].component;
-            if((data.x>selComponent.x&&data.y>selComponent.y)&&(data.x<selComponent.x+selComponent.w&&data.y<selComponent.x+selComponent.y)) {
-                combined[i].callback();
+            if((data.x>selComponent.x&&data.y>selComponent.y)&&(data.x<selComponent.x+selComponent.w&&data.y<selComponent.y+selComponent.h)) {
+                combined[i].callback(data);
             } 
         }
     }
@@ -262,8 +262,17 @@ function Button(text, x, y, w, h) {
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
-    this.component.addEventListener("mousedown", function(e) {
-        console.log("Clicked!");
+    // this.component.addEventListener("mousedown", function(e) {
+    //     console.log("Clicked!");
+    // });
+    // this.component.addEventListener("mousemove", function(e) {
+    //     console.log("Moved!");
+    // });
+    // this.component.addEventListener("mouseup", function(e) {
+    //     console.log("Up!");
+    // });
+    this.component.addEventListener("any", function(e) {
+        console.log(e.eventType);
     });
     this.shapes=this.component.shapes;
 

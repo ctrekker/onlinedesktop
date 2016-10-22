@@ -288,9 +288,7 @@ function program(args) {
                             dragOffX=e.x-w.x;
                             dragOffY=e.y-w.y;
                         }
-                        console.log(windows);
                         windows=windows.remove(i);
-                        console.log(windows);
                         windows.push(w);
                         
                         //cw stands for Current Window

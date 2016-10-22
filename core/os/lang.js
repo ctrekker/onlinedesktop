@@ -39,7 +39,21 @@ var System={
             params: this.getSend()
         });
     },
-    allWindows: []
+    allWindows: [],
+    defaultAddEventListener: function(name, callback) {
+        this.event[name].push(callback);
+    },
+    defaultTriggerEvent: function(name, data) {
+        data.eventType=name;
+        data.window=this;
+        data.executor=this.exeEnvironment;
+        for(var i=0; i<this.event[name].length; i++) {
+            this.event[name][i](data);
+        }
+        for(var i=0; i<this.event["any"].length; i++) {
+            this.event["any"][i](data);
+        }
+    }
 };
 System.Window.prototype={
     show: function() {
@@ -227,14 +241,10 @@ Component.prototype={
             ComponentEvents[name]=[];
         }
         ComponentEvents[name].push({component: this, callback: func});
-        console.log(ComponentEvents);
     }
 };
 Component.ID=0;
 var ComponentEvents={
-    "mousedown": [],
-    "mousemove": [],
-    "mouseup": [],
     "any": []
 };
 function Button(text, x, y, w, h) {
@@ -246,7 +256,9 @@ function Button(text, x, y, w, h) {
     this.y=y;
     this.w=w;
     this.h=h;
-
+    this.event={
+        
+    };
     this.component=new Component();
     this.component.x=x;
     this.component.y=y;
@@ -262,23 +274,23 @@ function Button(text, x, y, w, h) {
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
-    // this.component.addEventListener("mousedown", function(e) {
-    //     console.log("Clicked!");
-    // });
-    // this.component.addEventListener("mousemove", function(e) {
-    //     console.log("Moved!");
-    // });
-    // this.component.addEventListener("mouseup", function(e) {
-    //     console.log("Up!");
-    // });
+    this.component.addEventListener("mousedown", function(e) {
+        
+    });
+    this.component.addEventListener("mousemove", function(e) {
+        console.log(this);
+    });
+    this.component.addEventListener("mouseup", function(e) {
+        
+    });
     this.component.addEventListener("any", function(e) {
         console.log(e.eventType);
     });
     this.shapes=this.component.shapes;
-
-    this.event={};
-    console.log(self);
 }
+Button.prototype.addEventListener=System.defaultAddEventListener;
+Button.prototype.triggerEvent=System.defaultTriggerEvent;
+
 Button.WIDTH=60;
 Button.HEIGHT=20;
 Button.FILL="#EEE";

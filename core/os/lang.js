@@ -105,9 +105,11 @@ System.Window.prototype={
     },
 
     //ADDS
-    addEventListener: function(name, callback) {
-        this.event[name].push(callback);
-    }
+    addEventListener: function(name, callback, component) {
+        if(this.event[name]=='undefined') this.event[name]=[];
+        this.event[name].push({component: component, callback: callback});
+    },
+    triggerEvent: System.defaultTriggerEvent
 };
 function Graphics() {
     this.data={
@@ -202,20 +204,10 @@ addEventListener("message", function(e) {
     var window=System.allWindows[data.windowID];
     data.window=window;
 
-    for(var i=0; i<System.favor(window.event[data.eventType].length, []); i++) {
-        window.event[data.eventType][i](data);
-    }
-    for(var i=0; i<window.event["any"].length; i++) {
-        window.event["any"][i](data);
-    }
-
-    if(data.eventType.search("mouse")!=-1) {
-        var combined=ComponentEvents[data.eventType].concat(ComponentEvents["any"]);
-        for(var i=0; i<combined.length; i++) {
-            var selComponent=combined[i].component;
-            if((data.x>selComponent.x&&data.y>selComponent.y)&&(data.x<selComponent.x+selComponent.w&&data.y<selComponent.y+selComponent.h)) {
-                combined[i].callback(data);
-            } 
+    var eventCalls=[data.eventType, "any"];
+    for(var x=0; x<eventCalls.length; x++) {
+        for(var i=0; i<System.favor(window.event[eventCalls[x]].length, []); i++) {
+            window.event[eventCalls[x]][i].callback(data);
         }
     }
 });
@@ -226,27 +218,9 @@ function Component(sdata) {
 Component.prototype={
     add: function(shape) {
         this.shapes.push(shape);
-    },
-    addEventListener: function(name, callback) {
-        var func;
-        if(typeof callback=="string") {
-            console.log("string");
-            func=self[callback];
-        }
-        else if(typeof callback=="function") {
-            console.log("function");
-            func=callback;
-        }
-        if(typeof ComponentEvents[name]=='undefined') {
-            ComponentEvents[name]=[];
-        }
-        ComponentEvents[name].push({component: this, callback: func});
     }
 };
 Component.ID=0;
-var ComponentEvents={
-    "any": []
-};
 function Button(text, x, y, w, h) {
     w=w||Button.WIDTH;
     h=h||Button.HEIGHT;
@@ -274,18 +248,6 @@ function Button(text, x, y, w, h) {
     this.component.add(box1);
     this.component.add(box2);
     this.component.add(text);
-    this.component.addEventListener("mousedown", function(e) {
-        
-    });
-    this.component.addEventListener("mousemove", function(e) {
-        console.log(this);
-    });
-    this.component.addEventListener("mouseup", function(e) {
-        
-    });
-    this.component.addEventListener("any", function(e) {
-        console.log(e.eventType);
-    });
     this.shapes=this.component.shapes;
 }
 Button.prototype.addEventListener=System.defaultAddEventListener;

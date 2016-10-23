@@ -3,6 +3,10 @@
     require '../core/lib/security/database.php';
 
     session_start();
+
+    $action="SET";
+    require '../core/lib/security/storagelog.php';
+
     //Make sure all required variables exist
     if(isset($_SESSION["username"])&&isset($_SESSION["password"])&&isset($_SESSION["id"])&&isset($_SESSION["ip"])&&isset($_POST["path"])&&isset($_POST["content"])) {
         //Make sure ip is same as original log in ip (to prevent spoofing)

@@ -4,6 +4,9 @@
 
     session_start();
 
+    $action="GET";
+    require '../core/lib/security/storagelog.php';
+
     //See what content-type to use
     if(isset($_GET["content_type"])) {
         header("Content-Type: ".$_GET["content_type"]);

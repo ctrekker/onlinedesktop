@@ -1,4 +1,15 @@
+/**
+ * The global System variable stores all of the objects or variables closely tied to the base 
+ * OS. Objects such as Windows are stored here, and can also be created using its constructor.
+ * Anything that is not directly used in the System or OS environment is not stored here, like 
+ * the Graphics or Component objects. Just because they are used in an object associated with 
+ * System does not mean that it is a part of the System object.
+ */
 var System={
+    /**
+     * Prints a string message to the JavaScript development console.
+     * @param  txt 
+     */
     println: function(txt) {
         postMessage({
             action: "System.println",

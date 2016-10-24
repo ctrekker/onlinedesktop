@@ -1,0 +1,13 @@
+{
+    "name": "OnlineDesktop AppScript",
+    "description": "The OnlineDesktop AppScript API: For creating integrated, multipurpose applications easy to create.",
+    "version": "0.0.3",
+    "url": "http://www.github.com/ctrekker/onlinedesktop",
+	"icon": "E:/Storage/Programming/Apps/onlinedesktop/core/os/default/assets/icons/filetypes/app.png",
+    "options": {
+        "outdir": "E:/Storage/Programming/Apps/onlinedesktop/build/docs",
+		"paths": [
+			"E:/Storage/Programming/Apps/onlinedesktop/"
+		]
+    }
+}

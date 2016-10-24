@@ -7,8 +7,9 @@
  */
 var System={
     /**
-     * Prints a string message to the JavaScript development console.
-     * @param  txt 
+     * Prints a string message to the JavaScript development console.<br>
+     * Be sure to note that console.log is disabled, so this can be used as a replacement.
+     * @param  {string} txt - The string value to send to the JavaScript console in the web browser.
      */
     println: function(txt) {
         postMessage({
@@ -173,17 +174,40 @@ Shape.prototype={
     setStroke: function(c) {this.sc=c},
     setStrokeSize: function(ss) {this.ss=ss}
 };
+/**
+ * ShapeType is used in shape creation through the Shape() constructor to direct which shape type
+ * the Shape() should identify itself by. The number values inside this are not meant to be used as constants,
+ * but as an enum for easier identification.
+ */
 var ShapeType={
     RECTANGLE: 0,
     ELLIPSE: 1,
     LINE: 2,
     TEXT: 3
 };
+/**
+ * Line() is a "subclass" of shape. This is primarily meant to be a class to make it easier to create specific shapes
+ * like lines, in this case. Inside the constructor, the ShapeType.LINE is automatically inserted into the internal 
+ * shape object.
+ * @param  {int} x1 - The starting x coordinate of the line 
+ * @param  {int} y1 - The starting y coordinate of the line 
+ * @param  {int} x2 - The ending x coordinate of the line 
+ * @param  {int} y2 - The ending y coordinate of the line
+ */
 function Line(x1, y1, x2, y2, sc, ss) {
     var shape=new Shape(ShapeType.LINE, x1, y1, x2, y2, undefined, sc, ss);
     this.type=shape.type;
     this.data=shape.data;
 }
+/**
+ * Text() is a "subclass" similar to that of Line(). It is used to make creating ShapeType.TEXT Shapes easier and more
+ * straight foward. The internal Shape() object stored in the Text() object is initialized with ShapeType.TEXT as its
+ * shape type.
+ * @param  {string} text - The text that is displayed on a Graphics() object if Shape() is added to Graphics()
+ * @param  {int} x - The x coordinate of the text
+ * @param  {int} y - The y coordinate of the text
+ * @param  {object} data - A JSON object containing things like TextBaseline and TextAlign
+ */
 function Text(text, x, y, data, fc, sc, ss) {
     var o=System.favor;
     var font=o(data.font, Text.FONT);

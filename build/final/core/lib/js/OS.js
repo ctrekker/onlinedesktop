@@ -1,25 +1,906 @@
-$.M=$.ajax;
-for(var g="function"==typeof Object.defineProperties?Object.defineProperty:function(a,e,f){if(f.get||f.set)throw new TypeError("ES3 does not support getters and setters.");a!=Array.prototype&&a!=Object.prototype&&(a[e]=f.value)},k="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global?global:this,B=["Array","prototype","fill"],D=0;D<B.length-1;D++){var F=B[D];F in k||(k[F]={});k=k[F]}
-var G=B[B.length-1],H=k[G],I=H?H:function(a,e,f){var h=this.length||0;0>e&&(e=Math.max(0,h+e));if(null==f||f>h)f=h;f=Number(f);0>f&&(f=Math.max(0,h+f));for(e=Number(e||0);e<f;e++)this[e]=a;return this};I!=H&&null!=I&&g(k,G,{configurable:!0,writable:!0,value:I});window.onload=function(){var a={};$.M({type:"GET",url:"/core/os/default/System.json",W:function(e){a.ia=e;J(a)}})};var K,L,M,N=(new Date).getTime();
-function J(a){function e(){x.clear();x.fillStyle=K.na;x.fillRect(0,0,f.width,f.height);for(var b=0;b<M.length;b++){var a=M[b];if(a.s){var e=document.getElementById("wcanvas_"+a.id);null==e&&(e=document.createElement("canvas"),e.setAttribute("class","dynamic-canvas"),e.setAttribute("id","wcanvas_"+a.id),document.body.appendChild(e));e.width=a.width;e.height=a.height;var m=e.getContext("2d"),d=document.getElementById("gcanvas_"+a.id);null==d&&(d=document.createElement("canvas"),d.setAttribute("class",
-"dynamic-canvas"),d.setAttribute("id","gcanvas_"+a.id),document.body.appendChild(d));d.width=a.width;d.height=a.height-K.a;var c=d.getContext("2d");m.fillStyle=K.pa;m.fillRect(0,0,a.width,K.a);m.fillStyle="null"==a.i.N?a.i.N:K.ea;m.fillRect(0,K.a,a.width,a.height-K.a);try{m.drawImage(a.icon,K.ga,K.a/2-K.T/2,K.U,K.T)}catch(ba){a.icon=Image.w()}m.font=K.fa;m.textBaseline="middle";m.fillStyle=K.sa;m.fillText(a.title,K.ga+K.U+K.ta,K.a/2);m.textBaseline="top";for(var y=0;y<a.i.elements.length;y++){var h=
-a.i.elements[y],l=h.data;h.type==q.u&&(c.textBaseline=l.b.ka,c.textAlign=l.b.align);if(O(l.da))switch(c.fillStyle=l.da,h.type){case q.I:c.fillRect(l.x,l.y,l.f,l.b);break;case q.F:c.ellipse(l.x+l.f/2,l.y+l.b/2,l.f/2,l.b/2,0,0,2*Math.PI);c.fill();break;case q.u:c.font=l.b.font,c.fillText(l.f,l.x,l.y)}if(O(l.ha))switch(c.strokeStyle=l.ha,c.lineWidth=l.wa,h.type){case q.I:c.strokeRect(l.x,l.y,l.f,l.b);break;case q.F:c.ellipse(l.x,l.y,l.f,l.b);c.stroke();break;case q.Y:c.moveTo(l.x,l.y);c.lineTo(l.f,l.b);
-c.stroke();break;case q.u:c.font=l.b.font,c.strokeText(l.f,l.x,l.y)}}a:{c=M;for(y=c.length-1;0<=y;y--)if(c[y].id==a.id){c=y;break a}c=void 0}c="z-index: "+c;d.setAttribute("style","left: "+a.x+"px; top: "+(K.a+a.y)+"px; "+c);e.setAttribute("style","left: "+a.x+"px; top: "+a.y+"px; "+c);m.strokeStyle=K.oa;m.lineWidth=K.S;m.strokeRect(0,0,a.width,a.height);m.strokeStyle=K.qa;m.lineWidth=K.ra;m.beginPath();m.moveTo(0,K.a);m.lineTo(a.width,K.a);m.stroke()}}}var f=document.getElementById("desktop");f.width=
-window.innerWidth;f.height=window.innerHeight;var h=f.getContext("2d");K=a.ia;L={X:{N:K.ea,elements:[]}};var q={I:0,F:1,Y:2,u:3};setInterval(e,20);var x=h;M=[];new P({g:[{action:"compile",source:"/core/os/default/apps/test.js",h:"/apps/test.ose",v:function(b){console.log("Application compiled sucessfully in "+((new Date).getTime()-N).toString()+" milliseconds!");console.log("Result:\n"+b)}},{action:"execute",source:"/apps/test.ose",start:function(){console.log("Finished setup after "+((new Date).getTime()-
-N)+" milliseconds!")}}]});new Window(10,10,200,100,"Test");new Window(100,100,200,100,"Test2");M[M.length-1].addEventListener("mousedown",function(b){console.log("X: "+b.x+", Y: "+b.y)});a=new Worker("text.js");a.postMessage({action:"data",value:K});a.postMessage({action:"widthIndex",value:JSON.stringify(Q())});var w=0,E=0,v=null,C=!1,u=8,n=null,z,A,r,t;window.onmousedown=function(b){var a="";v=null;C=!0;for(var e=[],f=0;f<M.length;f++)b.x>M[f].x&&b.x<M[f].x+M[f].width&&b.y>M[f].y&&b.y<M[f].y+M[f].height&&
-e.push(f);e.pop();for(f=M.length-1;0<=f;f--){var d=M[f],c=K.V;if(b.x>=d.x&&b.y>=d.y&&b.x<=d.x+d.width&&b.y<=d.y+d.height){if(-1==e.indexOf(f)){b.x>=d.x+c&&b.y>=d.y+c&&b.x<=d.x+d.width-c&&b.y<=d.y+d.height-c&&(a="window",b.y<d.y+K.a&&(v=d,w=b.x-d.x,E=b.y-d.y),M=M.remove(f),M.push(d),e=M[M.length-1],b.y>e.y+K.a&&R(e,"mousedown",{x:b.x-e.x,y:b.y-e.y-K.a}));break}if(f==M.length-1)break}}if(""==a)for(f=M.length-1;0<=f;f--)if(d=M[f],c=K.V,b.x>d.x&&b.x<d.x+c&&b.y>d.y+c&&b.y<d.y+d.height-c?u=p.G:b.x>d.x+
-d.width-c&&b.x<d.x+d.width&&b.y>d.y+c&&b.y<d.y+d.height-c?u=p.H:b.x>d.x+c&&b.x<d.x+d.width-c&&b.y>d.y&&b.y<d.y+c?u=p.J:b.x>d.x+c&&b.x<d.x+d.width-c&&b.y>d.y+d.height-c&&b.y<d.y+d.height?u=p.B:b.x>d.x&&b.x<d.x+c&&b.y>d.y&&b.y<d.y+c?u=p.K:b.x>d.x+d.width-c&&b.x<d.x+d.width&&b.y>d.y&&b.y<d.y+c?u=p.L:b.x>d.x&&b.x<d.x+c&&b.y>d.y+d.height-c&&b.y<d.y+d.height?u=p.C:b.x>d.x+d.width-c&&b.x<d.x+d.width&&b.y>d.y+d.height-c&&b.y<d.y+d.height&&(u=p.D),b.x>d.x&&b.x<d.x+d.width&&b.y>d.y&&b.y<d.y+d.height&&!(b.x>
-d.x+c&&b.x<d.x+d.width-c&&b.y>d.y+c&&b.y<d.y+d.height-c)){n=d;r=d.x;t=d.y;z=d.width;A=d.height;break}};window.onmousemove=function(b){if(C)if(null!=v)v.s?(v.x=b.x-w,v.y=b.y-E):C=!1;else{if(u!=p.NONE)switch(u){case p.G:b.x<r+z-K.l&&(n.x=b.x,n.width=r-b.x+z);break;case p.H:b.x>r+K.l&&(n.width=b.x-r);break;case p.J:b.y<t+A-K.j&&(n.y=b.y,n.height=t-b.y+A);break;case p.B:b.y>t+K.j&&(n.height=b.y-t);break;case p.K:b.x<r+z-K.l&&(n.x=b.x,n.width=r-b.x+z);b.y<t+A-K.j&&(n.y=b.y,n.height=t-b.y+A);break;case p.L:b.x>
-r+K.l&&(n.width=b.x-r);b.y<t+A-K.j&&(n.y=b.y,n.height=t-b.y+A);break;case p.C:b.x<r+z-K.l&&(n.x=b.x,n.width=r-b.x+z);b.y>t+K.j&&(n.height=b.y-t);break;case p.D:b.x>r+K.l&&(n.width=b.x-r),b.y>t+K.j&&(n.height=b.y-t)}}else{for(var a=!1,e=[],f=0;f<M.length;f++)b.x>M[f].x&&b.x<M[f].x+M[f].width&&b.y>M[f].y&&b.y<M[f].y+M[f].height&&e.push(f);e.pop();for(var d=document.body,f=M.length-1;0<=f;f--)if(-1==e.indexOf(f)){var c=M[f],h=K.V;b.x>c.x&&b.x<c.x+h&&b.y>c.y+h&&b.y<c.y+c.height-h?(d.style.cursor="w-resize",
-a=!0):b.x>c.x+c.width-h&&b.x<c.x+c.width&&b.y>c.y+h&&b.y<c.y+c.height-h?(d.style.cursor="e-resize",a=!0):b.x>c.x+h&&b.x<c.x+c.width-h&&b.y>c.y&&b.y<c.y+h?(d.style.cursor="n-resize",a=!0):b.x>c.x+h&&b.x<c.x+c.width-h&&b.y>c.y+c.height-h&&b.y<c.y+c.height?(d.style.cursor="s-resize",a=!0):b.x>c.x&&b.x<c.x+h&&b.y>c.y&&b.y<c.y+h?(d.style.cursor="nw-resize",a=!0):b.x>c.x+c.width-h&&b.x<c.x+c.width&&b.y>c.y&&b.y<c.y+h?(d.style.cursor="ne-resize",a=!0):b.x>c.x&&b.x<c.x+h&&b.y>c.y+c.height-h&&b.y<c.y+c.height?
-(d.style.cursor="sw-resize",a=!0):b.x>c.x+c.width-h&&b.x<c.x+c.width&&b.y>c.y+c.height-h&&b.y<c.y+c.height&&(d.style.cursor="se-resize",a=!0)}a||(d.style.cursor="default")}a=M[M.length-1];b.x>a.x&&b.x<a.x+a.width&&b.y>a.y+K.a&&b.y<a.y+a.height&&R(a,"mousemove",{x:b.x-a.x,y:b.y-a.y-K.a})};window.onmouseup=function(a){null!=v&&C&&(v.x=a.x-w,v.y=a.y-E,v=null,E=w=0);u!=p.NONE&&(u=p.NONE);var b=M[M.length-1];a.x>b.x&&a.x<b.x+b.width&&a.y>b.y+K.a&&a.y<b.y+b.height&&R(b,"mouseup",{x:a.x-b.x,y:a.y-b.y-K.a});
-C=!1};window.onresize=function(){f.width=window.innerWidth;f.height=window.innerHeight;e()};var p={G:0,H:1,J:2,B:3,K:4,L:5,C:6,D:7,NONE:8}}function P(a){S(a)}
-function S(a){a="undefined"==typeof a?T:a;for(var e in a.g){var f=a.g[e];if("compile"==f.action){var h=new U(f.source,f.h,function(f){V(h,f);var e=h.compile();$.M({type:"POST",url:"/user/set.php",data:{path:e.h,content:e.code},W:function(){e.v(e.code);a.g=a.g.remove(0);S(a)}})},f.v);break}else"execute"==f.action&&((new W(f.source)).start(),f.start())}}var T={g:[{action:"execute"}]};function U(a,e,f,h){this.$=a;this.R=!1;this.h=e;this.ca=h;$.M({type:"get",url:this.$,W:f})}
-U.prototype.compile=function(){if(this.R)return this.aa="importScripts('"+K.va+"');\n"+this.Z,{code:this.aa,v:this.ca,h:this.h};console.warn("Please wait to call compile() until source code has been loaded.")};function V(a,e){a.R=!0;a.Z=e}function W(a){this.path=a;this.m=[]}W.prototype.start=function(){this.A=new Worker("get.php?content_type=text/javascript&path="+this.path);this.A.ja=this;this.A.onmessage=aa};function aa(a){X.c=this.ja;X[a.data.action](a.data.ua)}
-var X={"System.println":function(a){console.log(a)},"System.Window.<init>":function(a){var e;M.push(e=new Window(a.x,a.y,a.width,a.height,a.title,void 0,a.P.data));e.ba=this.c;Y(e);e.addEventListener("any",function(a){var e=a.O;a.xa=X["System.Window.getLocalID"](a.window);delete a.window;delete a.O;e.A.postMessage(a)});this.c.m.push({global:e.id,local:a.id})},"System.Window.show":function(a){var e=this["System.Window.getGlobalWindow"](a);this["System.Window.update"](a);e.show()},"System.Window.hide":function(a){var e=
-this["System.Window.getGlobalWindow"](a);this["System.Window.update"](a);Y(e)},"System.Window.update":function(a){this["System.Window.getGlobalWindow"](a).update(a)},"System.Window.getGlobalID":function(a){for(var e=0;e<this.c.m.length;e++){var f=this.c.m[e];if(f.local==a.id)return f.global}},"System.Window.getGlobalWindow":function(a){a:{a=this["System.Window.getGlobalID"](a);for(var e=0;e<M.length;e++)if(M[e].id==a){a=M[e];break a}a=void 0}return a},"System.Window.getLocalID":function(a){for(var e=
-0;e<this.c.m.length;e++){var f=this.c.m[e];if(f.global==a.id)return f.local}},c:null};Array.prototype.remove=function(a){delete this[a];a=[];for(var e=0;e<this.length;e++)"undefined"!=typeof this[e]&&a.push(this[e]);return a};CanvasRenderingContext2D.prototype.clear=CanvasRenderingContext2D.prototype.clear||function(a){a&&(this.save(),this.setTransform(1,0,0,1,0,0));this.clearRect(0,0,this.canvas.width,this.canvas.height);a&&this.restore()};
-function Q(){var a=K.fa,e=[],f="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()`~-=_+[]{}|\"';:/?>.<, ".split(""),h=document.createElement("canvas").getContext("2d");h.font=a;for(a=0;a<f.length;a++){var q=f[a];e.push([q,h.measureText(q).width])}return e}Image.w=function(){var a=K.ma,e=new Image(K.U,K.T);e.src=a;return e};function O(a){return!("undefined"==typeof a||null==a)}
-function Window(a,e,f,h,q,x,w){this.update(a,e,f,h,q,x,w);this.id=Z;this.o={};this.s=!0;this.event={mousedown:[],mouseup:[],mousemove:[],keyup:[],keydown:[],any:[]};M.push(this);Z++}Window.prototype.show=function(){this.x=this.o.x;this.y=this.o.y;this.o={};this.s=!0};function Y(a){a.o={x:a.x,y:a.y};a.x=-a.width-K.S;a.y=-a.height-K.S;a.s=!1}
-Window.prototype.update=function(a,e,f,h,q,x,w){"object"==typeof a?(this.title=a.title,this.icon="undefined"==typeof a.icon?Image.w():a.icon,this.i="undefined"==typeof a.P.data?L.X:a.P.data):(this.x=a,this.y=e,this.width=f,this.height=h,this.title=q,this.icon="undefined"==typeof x?Image.w():x,this.i="undefined"==typeof w?L.X:w)};Window.prototype.addEventListener=function(a,e){this.event[a].push(e)};
-function R(a,e,f){f.la=e;f.window=a;f.O=a.ba;for(var h=0;h<a.event[e].length;h++)a.event[e][h](f);for(h=0;h<a.event.any.length;h++)a.event.any[h](f)}var Z=0;
+window.onload=function() {
+    //Initialization
+    var args={};
+    ajax.send("/core/os/default/System.json", function (response) {
+        args.system=JSON.parse(response);
+        program(args);
+    }, "GET");
+}
+var System;
+var Defaults;
+var windows;
+var start=new Date().getTime();
+function program(args) {
+    "use strict";
+    var canvas=document.getElementById("desktop");
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    var context=canvas.getContext("2d");
+    
+    System=args.system;
+
+    Defaults={
+        windowGData: {
+            bg: System.osWindowContentBackground,
+            elements: [
+                
+            ]
+        }
+    }
+    var DT={
+        SQUARE: 0,
+        ELLIPSE: 1,
+        LINE: 2,
+        TEXT: 3
+    }
+    
+    setInterval(draw, 20);
+    var c=context;
+    
+    var compileStartTime=new Date().getTime();
+    windows=[];
+    var app=new Application({
+        commands: [
+            {
+                action: "compile",
+                source: "/core/os/default/apps/test.js",
+                dest: "/apps/test.ose",
+                callback: function(code) {
+                    console.log("Application compiled sucessfully in "+(new Date().getTime()-start).toString()+" milliseconds!");
+                    console.log("Result:\n"+code);
+                }
+            },
+            {
+                action: "execute",
+                source: "/apps/test.ose",
+                start: function() {
+                    console.log("Finished setup after "+(new Date().getTime()-start)+" milliseconds!");
+                }
+            }
+        ]
+    });
+    new Window(10, 10, 200, 100, "Test");
+    new Window(100, 100, 200, 100, "Test2");
+    windows[windows.length-1].addEventListener("mousedown", function(e) {
+        console.log("X: "+e.x+", Y: "+e.y);
+    });
+
+    var firstTime=true;
+    function draw() {
+        if(firstTime) {
+            
+        }
+
+        c.clear();
+        c.fillStyle=System.osDesktopBackground;
+        c.fillRect(0, 0, canvas.width, canvas.height);
+        for(var i=0; i<windows.length; i++) {
+            //Window
+            var window=windows[i];
+            if(window.shown) {
+                //Create cropping canvas
+                var wcanvas=document.getElementById("wcanvas_"+window.id);
+                if(wcanvas==null) {
+                    wcanvas=document.createElement("canvas");
+                    wcanvas.setAttribute("class", "dynamic-canvas");
+                    wcanvas.setAttribute("id", "wcanvas_"+window.id);
+                    document.body.appendChild(wcanvas);
+                }
+                wcanvas.width=window.width;
+                wcanvas.height=window.height;
+                var wc=wcanvas.getContext("2d");
+
+                var gcanvas=document.getElementById("gcanvas_"+window.id);
+                if(gcanvas==null) {
+                    gcanvas=document.createElement("canvas");
+                    gcanvas.setAttribute("class", "dynamic-canvas");
+                    gcanvas.setAttribute("id", "gcanvas_"+window.id);
+                    document.body.appendChild(gcanvas);
+                }
+                gcanvas.width=window.width;
+                gcanvas.height=window.height-System["osWindowOptionsHeight"];
+                var gc=gcanvas.getContext("2d");
+
+                //Fill window options
+                wc.fillStyle=System.osWindowOptionsBackground;
+                wc.fillRect(0, 0, window.width, System["osWindowOptionsHeight"]);
+                //Fill window content
+                wc.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
+                wc.fillRect(0, System["osWindowOptionsHeight"], window.width, window.height-System["osWindowOptionsHeight"]);
+                
+                //Draw window icon
+                try {
+                    wc.drawImage(window.icon, System.osWindowOptionsPadding, System["osWindowOptionsHeight"]/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
+                }
+                catch(e) {
+                    window.icon=Image.getIcon(System.osApplicationIcon);
+                }
+            
+                wc.font=System.osWindowContentFont;
+                //Draw title text
+                wc.textBaseline="middle";
+                wc.fillStyle=System.osWindowOptionsColor;
+                wc.fillText(window.title, System.osWindowOptionsPadding+System.osWindowIconWidth+System.osWindowOptionsTitleIconSeperation, System["osWindowOptionsHeight"]/2);
+                //Draw content
+                wc.textBaseline="top";
+                
+                //NEW CONTENT COMPILER HERE!!!
+                var start=System["osWindowOptionsHeight"];
+
+                //##### 1 #####
+                //Located at top
+                
+                //##### 2 #####
+                for(var n=0; n<window.gdata.elements.length; n++) {
+                    var element=window.gdata.elements[n];
+                    var edata=element.data;
+
+                    //Handle shape drawing
+                    if(element.type==DT.TEXT) {
+                        gc.textBaseline=edata.h.baseline;
+                        gc.textAlign=edata.h.align;
+                    }
+                    if(defined(edata.fc)) {
+                        gc.fillStyle=edata.fc;
+                        switch(element.type) {
+                            case DT.SQUARE:
+                                gc.fillRect(edata.x, edata.y, edata.w, edata.h);
+                                break;
+                            
+                            case DT.ELLIPSE:
+                                gc.ellipse(edata.x+edata.w/2, edata.y+edata.h/2, edata.w/2, edata.h/2, 0, 0, Math.PI*2);
+                                gc.fill();
+                                break;
+
+                            case DT.TEXT:
+                                gc.font=edata.h.font;
+                                gc.fillText(edata.w, edata.x, edata.y);
+                                break;
+                        }
+                    }
+                    if(defined(edata.sc)) {
+                        gc.strokeStyle=edata.sc;
+                        gc.lineWidth=edata.ss;
+                        switch(element.type) {
+                            case DT.SQUARE:
+                                gc.strokeRect(edata.x, edata.y, edata.w, edata.h);
+                                break;
+                            
+                            case DT.ELLIPSE:
+                                gc.ellipse(edata.x, edata.y, edata.w, edata.h);
+                                gc.stroke();
+                                break;
+                            
+                            case DT.LINE:
+                                gc.moveTo(edata.x, edata.y);
+                                gc.lineTo(edata.w, edata.h);
+                                gc.stroke();
+                                break;
+
+                            case DT.TEXT:
+                                gc.font=edata.h.font;
+                                gc.strokeText(edata.w, edata.x, edata.y);
+                                break;
+                        }
+                    }
+                }
+                var zIndex="z-index: "+findWindowInArray(window.id, windows);
+                gcanvas.setAttribute("style", "left: "+window.x+"px; top: "+(System["osWindowOptionsHeight"]+window.y)+"px; "+zIndex);
+                wcanvas.setAttribute("style", "left: "+window.x+"px; top: "+window.y+"px; "+zIndex);
+                
+                //Stroke window border
+                wc.strokeStyle=System.osWindowBorder;
+                wc.lineWidth=System.osWindowBorderWidth;
+                wc.strokeRect(0, 0, window.width, window.height);
+                //Stroke window options border
+                wc.strokeStyle=System.osWindowOptionsBorder;
+                wc.lineWidth=System.osWindowOptionsBorderWidth;
+                wc.beginPath();
+                wc.moveTo(0, System["osWindowOptionsHeight"]);
+                wc.lineTo(window.width, System["osWindowOptionsHeight"]);
+                wc.stroke();
+            }
+        }
+        firstTime=false;
+    }
+    var worker=new Worker("text.js");
+    worker.postMessage({action: "data", value: System});
+    worker.postMessage({action: "widthIndex", value: JSON.stringify(getWidthIndex(System.osWindowContentFont))});
+    function wrapText(text, x, y, maxWidth, lineHeight, w) {
+        w.isWorking=true;
+        if (typeof(Worker) !== "undefined") {
+            worker.postMessage({action: "get", value: "wrapText", input: {
+                text: text,
+                x: y,
+                y: y,
+                maxWidth: maxWidth,
+                lineHeight: lineHeight,
+                window: JSON.stringify(w),
+                height: w.height
+            }});
+            worker.onmessage=function(e) {
+                if(e.data=="STOP") {
+                    worker.terminate();
+                }
+                else if(e.data=="COMPLETED") {
+                    w.isWorking=false;
+                }
+                else if(e.data.request=="METRICS") {
+                    var ctx=document.createElement("canvas").getContext("2d");
+                    ctx.font=c.font;
+                    var width=ctx.measureText(e.data.text).width;
+                    worker.postMessage({width: width, action: "metrics"});
+                }
+                else if(e.data.action=="indexWidth") {
+                    worker.postMessage({action: "indexWidth", width: c.measureText(e.data.text).width, text: e.data.text});
+                }
+                else {
+                    w.lines.push([e.data.x, e.data.y, e.data.line]);
+                }
+            }
+        }
+        else {
+                // Sorry! No Web Worker support..
+        }
+    }
+    
+    var dragOffX=0;
+    var dragOffY=0;
+    var dragWindow=null;
+    var drag=false;
+    var clickedOn="";
+    var resizeOrient=8;
+    var resizeWindow=null;
+    var preWidth;
+    var preHeight;
+    var preX;
+    var preY;
+    var clickX=0;
+    var clickY=0;
+    window.onmousedown=function(e) {
+        clickX=e.x;
+        clickY=e.y;
+        var clickedOn="";
+        //See if click was on window
+        dragWindow=null;
+        drag=true;
+        var disabledList=[];
+        for(var i=0; i<windows.length; i++) {
+            if(e.x>windows[i].x&&e.x<windows[i].x+windows[i].width&&e.y>windows[i].y&&e.y<windows[i].y+windows[i].height) {
+                disabledList.push(i);
+            }
+        }
+        disabledList.pop();
+        for(var i=windows.length-1; i>=0; i--) {
+            //Check bounds
+            var w=windows[i];
+            var margin=System.osWindowResizeMargin;
+            if ((e.x>=w.x&&e.y>=w.y)&&(e.x<=w.x+w.width&&e.y<=w.y+w.height)) {
+                if(disabledList.indexOf(i)==-1) {
+                    if((e.x>=w.x+margin&&e.y>=w.y+margin)&&(e.x<=w.x+w.width-margin&&e.y<=w.y+w.height-margin)) {  
+                        clickedOn="window";
+                        if (e.y<w.y+System["osWindowOptionsHeight"]) {
+                            dragWindow=w;
+                            dragOffX=e.x-w.x;
+                            dragOffY=e.y-w.y;
+                        }
+                        windows=windows.remove(i);
+                        windows.push(w);
+                        
+                        //cw stands for Current Window
+                        var cw=windows[windows.length-1];
+                        if(e.y>cw.y+System["osWindowOptionsHeight"]) {
+                            cw.triggerEvent("mousedown", {
+                                x: e.x-cw.x,
+                                y: e.y-cw.y-System["osWindowOptionsHeight"]
+                            });
+                        }
+                        break;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (i==windows.length-1) {
+                    break;
+                }
+            }
+        }
+        if (clickedOn=="") {
+            for(var i=windows.length-1; i>=0; i--) {
+                var w=windows[i];
+                var margin=System.osWindowResizeMargin;
+                //Condition LEFT
+                if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
+                    resizeOrient=Resize.LEFT;
+                }
+                //Condition RIGHT
+                else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
+                    resizeOrient=Resize.RIGHT;
+                }
+                //Condition TOP
+                else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y&&e.y<w.y+margin)) {
+                    resizeOrient=Resize.TOP;
+                }
+                //Condition BOTTOM
+                else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                    resizeOrient=Resize.BOTTOM;
+                }
+                //Condition TOP_LEFT
+                else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y&&e.y<w.y+margin)) {
+                    resizeOrient=Resize.TOP_LEFT;
+                }
+                //Condition TOP_RIGHT
+                else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y&&e.y<w.y+margin)) {
+                    resizeOrient=Resize.TOP_RIGHT;
+                }
+                //Condition BOTTOM_LEFT
+                else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                    resizeOrient=Resize.BOTTOM_LEFT;
+                }
+                //Condition BOTTOM_RIGHT
+                else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                    resizeOrient=Resize.BOTTOM_RIGHT;
+                }
+                if((e.x>w.x&&e.x<w.x+w.width)&&(e.y>w.y&&e.y<w.y+w.height)) {
+                    if(!((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin))) {
+                        resizeWindow=w;
+                        preX=w.x;
+                        preY=w.y;
+                        preWidth=w.width;
+                        preHeight=w.height;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    window.onmousemove=function(e) {
+        if (drag) {
+            if (dragWindow!=null) {
+                if(dragWindow.shown) {
+                    dragWindow.x=e.x-dragOffX;
+                    dragWindow.y=e.y-dragOffY;
+                }
+                else {
+                    drag=false;
+                }
+            }
+            else if (resizeOrient!=Resize.NONE) {
+                switch (resizeOrient) {
+                    case Resize.LEFT:
+                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                            resizeWindow.x=e.x;
+                            resizeWindow.width=preX-e.x+preWidth;
+                        }
+                        break;
+                    case Resize.RIGHT:
+                        if (e.x>preX+System.osWindowMinimumWidth) {
+                            resizeWindow.width=e.x-preX;
+                        }
+                        break;
+                    case Resize.TOP:
+                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                            resizeWindow.y=e.y;
+                            resizeWindow.height=preY-e.y+preHeight;
+                        }
+                        break;
+                    case Resize.BOTTOM:
+                        if (e.y>preY+System.osWindowMinimumHeight) {
+                            resizeWindow.height=e.y-preY;
+                        }
+                        break;
+                    case Resize.TOP_LEFT:
+                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                            resizeWindow.x=e.x;
+                            resizeWindow.width=preX-e.x+preWidth;
+                        }
+                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                            resizeWindow.y=e.y;
+                            resizeWindow.height=preY-e.y+preHeight;
+                        }
+                        break;
+                    case Resize.TOP_RIGHT:
+                        if (e.x>preX+System.osWindowMinimumWidth) {
+                            resizeWindow.width=e.x-preX;
+                        }
+                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                            resizeWindow.y=e.y;
+                            resizeWindow.height=preY-e.y+preHeight;
+                        }
+                        break;
+                    case Resize.BOTTOM_LEFT:
+                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                            resizeWindow.x=e.x;
+                            resizeWindow.width=preX-e.x+preWidth;
+                        }
+                        if (e.y>preY+System.osWindowMinimumHeight) {
+                            resizeWindow.height=e.y-preY;
+                        }
+                        break;
+                    case Resize.BOTTOM_RIGHT:
+                        if (e.x>preX+System.osWindowMinimumWidth) {
+                            resizeWindow.width=e.x-preX;
+                        }
+                        if (e.y>preY+System.osWindowMinimumHeight) {
+                            resizeWindow.height=e.y-preY;
+                        }
+                        break;
+                }
+
+            }
+        }
+        else {
+            var changed=false;
+            var disabledList=[];
+            for(var i=0; i<windows.length; i++) {
+                if(e.x>windows[i].x&&e.x<windows[i].x+windows[i].width&&e.y>windows[i].y&&e.y<windows[i].y+windows[i].height) {
+                    disabledList.push(i);
+                }
+            }
+            disabledList.pop();
+            var body=document.body;
+            for(var i=windows.length-1; i>=0; i--) {
+                if(disabledList.indexOf(i)==-1) {
+                    var w=windows[i];
+                    var margin=System.osWindowResizeMargin;
+                    //Condition LEFT
+                    if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
+                        body.style.cursor="w-resize";
+                        changed=true;
+                    }
+                    //Condition RIGHT
+                    else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
+                        body.style.cursor="e-resize";
+                        changed=true;
+                    }
+                    //Condition TOP
+                    else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y&&e.y<w.y+margin)) {
+                        body.style.cursor="n-resize";
+                        changed=true;
+                    }
+                    //Condition BOTTOM
+                    else if ((e.x>w.x+margin&&e.x<w.x+w.width-margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                        body.style.cursor="s-resize";
+                        changed=true;
+                    }
+                    //Condition TOP_LEFT
+                    else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y&&e.y<w.y+margin)) {
+                        body.style.cursor="nw-resize";
+                        changed=true;
+                    }
+                    //Condition TOP_RIGHT
+                    else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y&&e.y<w.y+margin)) {
+                        body.style.cursor="ne-resize";
+                        changed=true;
+                    }
+                    //Condition BOTTOM_LEFT
+                    else if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                        body.style.cursor="sw-resize";
+                        changed=true;
+                    }
+                    //Condition BOTTOM_RIGHT
+                    else if ((e.x>w.x+w.width-margin&&e.x<w.x+w.width)&&(e.y>w.y+w.height-margin&&e.y<w.y+w.height)) {
+                        body.style.cursor="se-resize";
+                        changed=true;
+                    }
+                }
+            }
+            if(!changed) {
+                body.style.cursor="default";
+            }
+        }
+
+        var selWin=windows[windows.length-1];
+        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System["osWindowOptionsHeight"]&&e.y<selWin.y+selWin.height)) {
+            selWin.triggerEvent("mousemove", {
+                x: e.x-selWin.x,
+                y: e.y-selWin.y-System["osWindowOptionsHeight"]
+            });
+        }
+    }
+    window.onmouseup=function(e) {
+        if (dragWindow!=null&&drag) {
+            dragWindow.x=e.x-dragOffX;
+            dragWindow.y=e.y-dragOffY;
+            dragWindow=null;
+            dragOffX=0;
+            dragOffY=0;
+        }
+        if (resizeOrient!=Resize.NONE) {
+            resizeOrient=Resize.NONE;
+        }
+        
+        var selWin=windows[windows.length-1];
+        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System["osWindowOptionsHeight"]&&e.y<selWin.y+selWin.height)) {
+            selWin.triggerEvent("mouseup", {
+                x: e.x-selWin.x,
+                y: e.y-selWin.y-System["osWindowOptionsHeight"]
+            });
+        }
+        drag=false;
+    }
+    window.onresize=function(e) {
+        canvas.width=window.innerWidth;
+        canvas.height=window.innerHeight;
+        draw();
+    }
+
+    var Resize={
+        LEFT: 0,
+        RIGHT: 1,
+        TOP: 2,
+        BOTTOM: 3,
+        TOP_LEFT: 4,
+        TOP_RIGHT: 5,
+        BOTTOM_LEFT: 6,
+        BOTTOM_RIGHT: 7,
+        NONE: 8
+    }
+}
+
+
+var Application=function(runCommands) {
+    Application.run(runCommands);
+}
+Application.run=function(runCommands) {
+    runCommands=typeof runCommands=="undefined"?Application.DEFAULT_RUN_COMMANDS:runCommands;
+    for(var commandIndex in runCommands.commands) {
+        var command=runCommands.commands[commandIndex];
+        if(command.action=="compile") {
+            var appCompiler=new ApplicationCompiler(command.source, command.dest, function(code) {
+                appCompiler.setCode(code);
+                var compiled=appCompiler.compile();
+                var appRun=this.run;
+                ajax.post("/user/set.php", {
+                        path: compiled.dest,
+                        content: compiled.code
+                    }, function (response) {
+                        compiled.callback(compiled.code);
+                        runCommands.commands=runCommands.commands.remove(0);
+                        Application.run(runCommands);
+                });
+            }, command.callback);
+            break;
+        }
+        else if(command.action=="execute") {
+            var appExecutor=new ApplicationExecutor(command.source);
+            appExecutor.start();
+            command.start();
+        }
+    }
+}
+Application.DEFAULT_RUN_COMMANDS={
+    commands: [
+        {
+            action: "execute"
+        }
+    ]
+}
+
+//application.js
+//-----Application Compiler-----
+var ApplicationCompiler=function(appSource, dest, callback, afterCompile) {
+    this.appSource=appSource;
+    this.isReady=false;
+    this.flags=[];
+    this.dest=dest;
+    this.execAfter=afterCompile;
+    ajax.get(this.appSource, {}, callback);
+}
+ApplicationCompiler.prototype.compile=function() {
+    if(this.isReady) {
+        var js=this.appCode;
+        var completeJS="importScripts('"+System.scriptLangPath+"');\n"+js;
+        this.compiledCode=completeJS/*.toHex()*/;
+        return {code: this.compiledCode, callback: this.execAfter, dest: this.dest};
+    }
+    else {
+        console.warn("Please wait to call compile() until source code has been loaded.");
+    }
+}
+ApplicationCompiler.prototype.setCode=function(code) {
+    this.isReady=true;
+    this.appCode=code;
+}
+ApplicationCompiler.prototype.setDest=function(path) {
+    this.dest=path;
+}
+
+var ApplicationExecutor=function(path) {
+    this.path=path;
+    this.windowIDs=[];
+}
+ApplicationExecutor.prototype.start=function() {
+    this.internalWorker=new Worker("get.php?content_type=text/javascript&path="+this.path);
+    this.internalWorker.thisEquiv=this;
+    this.internalWorker.onmessage=ApplicationExecutor.handleRequest;
+}
+ApplicationExecutor.handleRequest=function(msg) {
+    ApplicationExecutor.support.exe=this.thisEquiv;
+    ApplicationExecutor.support[msg.data.action](msg.data.params);
+}
+ApplicationExecutor.support={
+    "System.println": function(msg) {
+        console.log(msg);
+    },
+    "System.Window.<init>": function(obj) {
+        var created;
+        windows.push(created=new Window(obj.x, obj.y, obj.width, obj.height, obj.title, undefined, obj.graphics.data));
+        created.setExecutionEnvironment(this.exe);
+        created.hide();
+        created.addEventListener("any", function(e) {
+            var executor=e.executor;
+            e.windowID=ApplicationExecutor.support["System.Window.getLocalID"](e.window);
+            delete e.window;
+            delete e.executor;
+            executor.internalWorker.postMessage(e);
+        });
+        this.exe.windowIDs.push({
+            global: created.id,
+            local: obj.id
+        });
+    },
+    "System.Window.show": function(obj) {
+        var currentWindow=this["System.Window.getGlobalWindow"](obj);
+        this["System.Window.update"](obj);
+        currentWindow.show();
+    },
+    "System.Window.hide": function(obj) {
+        var currentWindow=this["System.Window.getGlobalWindow"](obj);
+        this["System.Window.update"](obj);
+        currentWindow.hide();
+    },
+    "System.Window.update": function(obj) {
+        this["System.Window.getGlobalWindow"](obj).update(obj);
+    },
+    "System.Window.getGlobalID": function(obj) {
+        for(var i=0; i<this.exe.windowIDs.length; i++) {
+            var currentIDs=this.exe.windowIDs[i];
+            if(currentIDs.local==obj.id) {
+                return currentIDs.global;
+            }
+        }
+    },
+    "System.Window.getGlobalWindow": function(obj) {
+        return windows.findID(this["System.Window.getGlobalID"](obj));
+    },
+    "System.Window.getLocalID": function(obj) {
+        for(var i=0; i<this.exe.windowIDs.length; i++) {
+            var currentIDs=this.exe.windowIDs[i];
+            if(currentIDs.global==obj.id) {
+                return currentIDs.local;
+            }
+        }
+    },
+    exe: null
+}
+// If the primary value is defined, it will return that value. If it is
+// undefined, then it will return the second value. The special thing
+// about this is that you can insert a function as the second parameter
+// to serve as a callback.
+function o(primary, secondary) {
+    return (typeof primary=="undefined"?(typeof secondary=="function"?secondary():secondary):primary);
+}
+
+
+
+//util.js
+Array.prototype.swap = function (x,y) {
+    var b = this[x];
+    this[x] = this[y];
+    this[y] = b;
+    return this;
+}
+Array.prototype.remove = function(index) {
+    delete this[index];
+    var newArray=[];
+    for(var i=0; i<this.length; i++) {
+        if(typeof this[i]!="undefined") newArray.push(this[i]);
+    }
+    return newArray;
+};
+Array.prototype.findID=function(id) {
+    for(var i=0; i<this.length; i++) {
+        if(this[i].id==id) {
+        return this[i];
+        }
+    }
+}
+CanvasRenderingContext2D.prototype.clear = CanvasRenderingContext2D.prototype.clear || function (preserveTransform) {
+    if (preserveTransform) {
+        this.save();
+        this.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (preserveTransform) {
+        this.restore();
+    }
+};
+function getWidthIndex(font) {
+    var out=[];
+    var vals="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()`~-=_+[]{}|\"\';:/?>.<, ".split("");
+    var canvas=document.createElement("canvas");
+    var ctx=canvas.getContext("2d");
+    ctx.font=font;
+    for (var i=0; i<vals.length; i++) {
+        var val=vals[i];
+        out.push([val, ctx.measureText(val).width]);
+    }
+  
+    return out;
+}
+Image.getIcon=function(src) {
+    var icon=new Image(System.osWindowIconWidth, System.osWindowIconHeight);
+    icon.src=src;
+    return icon;
+}
+String.prototype.toHex = function(){
+    var hex, i;
+
+    var result = "";
+    for (i=0; i<this.length; i++) {
+        hex = this.charCodeAt(i).toString(16);
+        result += ("000"+hex).slice(-4);
+    }
+
+    return result
+}
+String.prototype.fromHex = function(){
+    var j;
+    var hexes = this.match(/.{1,4}/g) || [];
+    var back = "";
+    for(j = 0; j<hexes.length; j++) {
+        back += String.fromCharCode(parseInt(hexes[j], 16));
+    }
+
+    return back;
+}
+function defined(val) {
+    return !(typeof val == "undefined"||val == null);
+}
+//NOTE: This window does not return the actual Window object, but the index of the window object inside of the array/list
+function findWindowInArray(id, list) {
+    for(var i=list.length-1; i>=0; i--) {
+        if(list[i].id==id) {
+            return i;
+        }
+    }
+}
+
+
+function Window(x, y, width, height, title, icon, gdata) {
+    this.update(x, y, width, height, title, icon, gdata);
+
+    this.id=Window.nextID;
+    this.preHide={};
+    this.shown=true;
+    this.event={
+        "mousedown": [],
+        "mouseup": [],
+        "mousemove": [],
+        "keyup": [],
+        "keydown": [],
+        "any": []
+    };
+
+    windows.push(this);
+    Window.nextID++;
+}
+Window.prototype.show=function() {
+    this.x=this.preHide.x;
+    this.y=this.preHide.y;
+    this.preHide={};
+    this.shown=true;
+}
+Window.prototype.hide=function() {
+    this.preHide={
+        x: this.x,
+        y: this.y 
+    };
+    this.x=-this.width-System.osWindowBorderWidth;
+    this.y=-this.height-System.osWindowBorderWidth;
+    this.shown=false;
+}
+Window.prototype.update=function(xOrObj, y, width, height, title, icon, gdata) {
+    if(typeof xOrObj=="object") {
+        // this.x=xOrObj.x;
+        // this.y=xOrObj.y;
+        // this.width=xOrObj.width;
+        // this.height=xOrObj.height;
+        this.title=xOrObj.title;
+        if(typeof xOrObj.icon=="undefined") this.icon=Image.getIcon(System.osApplicationIcon);
+        else this.icon=xOrObj.icon;
+        if(typeof xOrObj.graphics.data=="undefined") this.gdata=Defaults.windowGData;
+        else this.gdata=xOrObj.graphics.data;
+    }
+    else {
+        this.x=xOrObj;
+        this.y=y;
+        this.width=width;
+        this.height=height;
+        this.title=title;
+        if(typeof icon=="undefined") this.icon=Image.getIcon(System.osApplicationIcon);
+        else this.icon=icon;
+        if(typeof gdata=="undefined") this.gdata=Defaults.windowGData;
+        else this.gdata=gdata;
+    }
+}
+Window.prototype.addEventListener=function(name, callback) {
+    this.event[name].push(callback);
+}
+Window.prototype.triggerEvent=function(name, data) {
+    data.eventType=name;
+    data.window=this;
+    data.executor=this.exeEnvironment;
+    for(var i=0; i<this.event[name].length; i++) {
+        this.event[name][i](data);
+    }
+    for(var i=0; i<this.event["any"].length; i++) {
+        this.event["any"][i](data);
+    }
+}
+Window.prototype.setExecutionEnvironment=function(environment) {
+    this.exeEnvironment=environment;
+}
+Window.nextID=0;
+
+var ajax = {};
+ajax.x = function () {
+    if (typeof XMLHttpRequest !== 'undefined') {
+        return new XMLHttpRequest();
+    }
+    var versions = [
+        "MSXML2.XmlHttp.6.0",
+        "MSXML2.XmlHttp.5.0",
+        "MSXML2.XmlHttp.4.0",
+        "MSXML2.XmlHttp.3.0",
+        "MSXML2.XmlHttp.2.0",
+        "Microsoft.XmlHttp"
+    ];
+
+    var xhr;
+    for (var i = 0; i < versions.length; i++) {
+        try {
+            xhr = new ActiveXObject(versions[i]);
+            break;
+        } catch (e) {
+        }
+    }
+    return xhr;
+};
+
+ajax.send = function (url, callback, method, data, async) {
+    if (async === undefined) {
+        async = true;
+    }
+    var x = ajax.x();
+    x.open(method, url, async);
+    x.onreadystatechange = function () {
+        if (x.readyState == 4) {
+            callback(x.responseText)
+        }
+    };
+    if (method == 'POST') {
+        x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    x.send(data)
+};
+
+ajax.get = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async)
+};
+
+ajax.post = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url, callback, 'POST', query.join('&'), async)
+};

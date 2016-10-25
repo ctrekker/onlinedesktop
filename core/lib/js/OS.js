@@ -1,14 +1,10 @@
 window.onload=function() {
     //Initialization
     var args={};
-    $.ajax({
-        type: "GET",
-        url: "/core/os/default/System.json",
-        success: function (response) {
-            args.system=response;
-            program(args);
-        }
-    });
+    ajax.send("/core/os/default/System.json", function (response) {
+        args.system=JSON.parse(response);
+        program(args);
+    }, "GET");
 }
 var System;
 var Defaults;
@@ -102,19 +98,19 @@ function program(args) {
                     document.body.appendChild(gcanvas);
                 }
                 gcanvas.width=window.width;
-                gcanvas.height=window.height-System.osWindowOptionsHeight;
+                gcanvas.height=window.height-System["osWindowOptionsHeight"];
                 var gc=gcanvas.getContext("2d");
 
                 //Fill window options
                 wc.fillStyle=System.osWindowOptionsBackground;
-                wc.fillRect(0, 0, window.width, System.osWindowOptionsHeight);
+                wc.fillRect(0, 0, window.width, System["osWindowOptionsHeight"]);
                 //Fill window content
                 wc.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
-                wc.fillRect(0, System.osWindowOptionsHeight, window.width, window.height-System.osWindowOptionsHeight);
+                wc.fillRect(0, System["osWindowOptionsHeight"], window.width, window.height-System["osWindowOptionsHeight"]);
                 
                 //Draw window icon
                 try {
-                    wc.drawImage(window.icon, System.osWindowOptionsPadding, System.osWindowOptionsHeight/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
+                    wc.drawImage(window.icon, System.osWindowOptionsPadding, System["osWindowOptionsHeight"]/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
                 }
                 catch(e) {
                     window.icon=Image.getIcon(System.osApplicationIcon);
@@ -124,12 +120,12 @@ function program(args) {
                 //Draw title text
                 wc.textBaseline="middle";
                 wc.fillStyle=System.osWindowOptionsColor;
-                wc.fillText(window.title, System.osWindowOptionsPadding+System.osWindowIconWidth+System.osWindowOptionsTitleIconSeperation, System.osWindowOptionsHeight/2);
+                wc.fillText(window.title, System.osWindowOptionsPadding+System.osWindowIconWidth+System.osWindowOptionsTitleIconSeperation, System["osWindowOptionsHeight"]/2);
                 //Draw content
                 wc.textBaseline="top";
                 
                 //NEW CONTENT COMPILER HERE!!!
-                var start=System.osWindowOptionsHeight;
+                var start=System["osWindowOptionsHeight"];
 
                 //##### 1 #####
                 //Located at top
@@ -189,7 +185,7 @@ function program(args) {
                     }
                 }
                 var zIndex="z-index: "+findWindowInArray(window.id, windows);
-                gcanvas.setAttribute("style", "left: "+window.x+"px; top: "+(System.osWindowOptionsHeight+window.y)+"px; "+zIndex);
+                gcanvas.setAttribute("style", "left: "+window.x+"px; top: "+(System["osWindowOptionsHeight"]+window.y)+"px; "+zIndex);
                 wcanvas.setAttribute("style", "left: "+window.x+"px; top: "+window.y+"px; "+zIndex);
                 
                 //Stroke window border
@@ -200,8 +196,8 @@ function program(args) {
                 wc.strokeStyle=System.osWindowOptionsBorder;
                 wc.lineWidth=System.osWindowOptionsBorderWidth;
                 wc.beginPath();
-                wc.moveTo(0, System.osWindowOptionsHeight);
-                wc.lineTo(window.width, System.osWindowOptionsHeight);
+                wc.moveTo(0, System["osWindowOptionsHeight"]);
+                wc.lineTo(window.width, System["osWindowOptionsHeight"]);
                 wc.stroke();
             }
         }
@@ -283,7 +279,7 @@ function program(args) {
                 if(disabledList.indexOf(i)==-1) {
                     if((e.x>=w.x+margin&&e.y>=w.y+margin)&&(e.x<=w.x+w.width-margin&&e.y<=w.y+w.height-margin)) {  
                         clickedOn="window";
-                        if (e.y<w.y+System.osWindowOptionsHeight) {
+                        if (e.y<w.y+System["osWindowOptionsHeight"]) {
                             dragWindow=w;
                             dragOffX=e.x-w.x;
                             dragOffY=e.y-w.y;
@@ -293,10 +289,10 @@ function program(args) {
                         
                         //cw stands for Current Window
                         var cw=windows[windows.length-1];
-                        if(e.y>cw.y+System.osWindowOptionsHeight) {
+                        if(e.y>cw.y+System["osWindowOptionsHeight"]) {
                             cw.triggerEvent("mousedown", {
                                 x: e.x-cw.x,
-                                y: e.y-cw.y-System.osWindowOptionsHeight
+                                y: e.y-cw.y-System["osWindowOptionsHeight"]
                             });
                         }
                         break;
@@ -496,10 +492,10 @@ function program(args) {
         }
 
         var selWin=windows[windows.length-1];
-        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System.osWindowOptionsHeight&&e.y<selWin.y+selWin.height)) {
+        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System["osWindowOptionsHeight"]&&e.y<selWin.y+selWin.height)) {
             selWin.triggerEvent("mousemove", {
                 x: e.x-selWin.x,
-                y: e.y-selWin.y-System.osWindowOptionsHeight
+                y: e.y-selWin.y-System["osWindowOptionsHeight"]
             });
         }
     }
@@ -516,10 +512,10 @@ function program(args) {
         }
         
         var selWin=windows[windows.length-1];
-        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System.osWindowOptionsHeight&&e.y<selWin.y+selWin.height)) {
+        if((e.x>selWin.x&&e.x<selWin.x+selWin.width)&&(e.y>selWin.y+System["osWindowOptionsHeight"]&&e.y<selWin.y+selWin.height)) {
             selWin.triggerEvent("mouseup", {
                 x: e.x-selWin.x,
-                y: e.y-selWin.y-System.osWindowOptionsHeight
+                y: e.y-selWin.y-System["osWindowOptionsHeight"]
             });
         }
         drag=false;
@@ -556,18 +552,13 @@ Application.run=function(runCommands) {
                 appCompiler.setCode(code);
                 var compiled=appCompiler.compile();
                 var appRun=this.run;
-                $.ajax({
-                    type: "POST",
-                    url: "/user/set.php",
-                    data: {
+                ajax.post("/user/set.php", {
                         path: compiled.dest,
                         content: compiled.code
-                    },
-                    success: function (response) {
+                    }, function (response) {
                         compiled.callback(compiled.code);
                         runCommands.commands=runCommands.commands.remove(0);
                         Application.run(runCommands);
-                    }
                 });
             }, command.callback);
             break;
@@ -595,11 +586,7 @@ var ApplicationCompiler=function(appSource, dest, callback, afterCompile) {
     this.flags=[];
     this.dest=dest;
     this.execAfter=afterCompile;
-    $.ajax({
-        type: "get",
-        url: this.appSource,
-        success: callback
-    });
+    ajax.get(this.appSource, {}, callback);
 }
 ApplicationCompiler.prototype.compile=function() {
     if(this.isReady) {
@@ -859,3 +846,61 @@ Window.prototype.setExecutionEnvironment=function(environment) {
     this.exeEnvironment=environment;
 }
 Window.nextID=0;
+
+var ajax = {};
+ajax.x = function () {
+    if (typeof XMLHttpRequest !== 'undefined') {
+        return new XMLHttpRequest();
+    }
+    var versions = [
+        "MSXML2.XmlHttp.6.0",
+        "MSXML2.XmlHttp.5.0",
+        "MSXML2.XmlHttp.4.0",
+        "MSXML2.XmlHttp.3.0",
+        "MSXML2.XmlHttp.2.0",
+        "Microsoft.XmlHttp"
+    ];
+
+    var xhr;
+    for (var i = 0; i < versions.length; i++) {
+        try {
+            xhr = new ActiveXObject(versions[i]);
+            break;
+        } catch (e) {
+        }
+    }
+    return xhr;
+};
+
+ajax.send = function (url, callback, method, data, async) {
+    if (async === undefined) {
+        async = true;
+    }
+    var x = ajax.x();
+    x.open(method, url, async);
+    x.onreadystatechange = function () {
+        if (x.readyState == 4) {
+            callback(x.responseText)
+        }
+    };
+    if (method == 'POST') {
+        x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    x.send(data)
+};
+
+ajax.get = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async)
+};
+
+ajax.post = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url, callback, 'POST', query.join('&'), async)
+};

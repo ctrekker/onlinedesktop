@@ -21,7 +21,7 @@ function program(args) {
 
     Defaults={
         windowGData: {
-            bg: System.osWindowContentBackground,
+            bg: System["osWindowContentBackground"],
             elements: [
                 
             ]
@@ -72,7 +72,7 @@ function program(args) {
         }
 
         c.clear();
-        c.fillStyle=System.osDesktopBackground;
+        c.fillStyle=System["osDesktopBackground"];
         c.fillRect(0, 0, canvas.width, canvas.height);
         for(var i=0; i<windows.length; i++) {
             //Window
@@ -102,25 +102,25 @@ function program(args) {
                 var gc=gcanvas.getContext("2d");
 
                 //Fill window options
-                wc.fillStyle=System.osWindowOptionsBackground;
+                wc.fillStyle=System["osWindowOptionsBackground"];
                 wc.fillRect(0, 0, window.width, System["osWindowOptionsHeight"]);
                 //Fill window content
-                wc.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System.osWindowContentBackground;
+                wc.fillStyle=window.gdata.bg=="null"?window.gdata.bg:System["osWindowContentBackground"];
                 wc.fillRect(0, System["osWindowOptionsHeight"], window.width, window.height-System["osWindowOptionsHeight"]);
                 
                 //Draw window icon
                 try {
-                    wc.drawImage(window.icon, System.osWindowOptionsPadding, System["osWindowOptionsHeight"]/2-System.osWindowIconHeight/2, System.osWindowIconWidth, System.osWindowIconHeight);
+                    wc.drawImage(window.icon, System["osWindowOptionsPadding"], System["osWindowOptionsHeight"]/2-System["osWindowIconHeight"]/2, System["osWindowIconWidth"], System["osWindowIconHeight"]);
                 }
                 catch(e) {
-                    window.icon=Image.getIcon(System.osApplicationIcon);
+                    window.icon=Image.getIcon(System["osApplicationIcon"]);
                 }
             
-                wc.font=System.osWindowContentFont;
+                wc.font=System["osWindowContentFont"];
                 //Draw title text
                 wc.textBaseline="middle";
-                wc.fillStyle=System.osWindowOptionsColor;
-                wc.fillText(window.title, System.osWindowOptionsPadding+System.osWindowIconWidth+System.osWindowOptionsTitleIconSeperation, System["osWindowOptionsHeight"]/2);
+                wc.fillStyle=System["osWindowOptionsColor"];
+                wc.fillText(window.title, System["osWindowOptionsPadding"]+System["osWindowIconWidth"]+System["osWindowOptionsTitleIconSeperation"], System["osWindowOptionsHeight"]/2);
                 //Draw content
                 wc.textBaseline="top";
                 
@@ -133,53 +133,54 @@ function program(args) {
                 //##### 2 #####
                 for(var n=0; n<window.gdata.elements.length; n++) {
                     var element=window.gdata.elements[n];
-                    var edata=element.data;
+                    var edata=element["data"];
+                    //console.log(element);
 
                     //Handle shape drawing
-                    if(element.type==DT.TEXT) {
-                        gc.textBaseline=edata.h.baseline;
-                        gc.textAlign=edata.h.align;
+                    if(element["type"]==DT.TEXT) {
+                        gc.textBaseline=edata["h"]["baseline"];
+                        gc.textAlign=edata["h"]["align"];
                     }
-                    if(defined(edata.fc)) {
-                        gc.fillStyle=edata.fc;
-                        switch(element.type) {
+                    if(defined(edata["fc"])) {
+                        gc.fillStyle=edata["fc"];
+                        switch(element["type"]) {
                             case DT.SQUARE:
-                                gc.fillRect(edata.x, edata.y, edata.w, edata.h);
+                                gc.fillRect(edata["x"], edata["y"], edata["w"], edata["h"]);
                                 break;
                             
                             case DT.ELLIPSE:
-                                gc.ellipse(edata.x+edata.w/2, edata.y+edata.h/2, edata.w/2, edata.h/2, 0, 0, Math.PI*2);
+                                gc.ellipse(edata["x"]+edata["w"]/2, edata["y"]+edata["h"]/2, edata["w"]/2, edata["h"]/2, 0, 0, Math.PI*2);
                                 gc.fill();
                                 break;
 
                             case DT.TEXT:
-                                gc.font=edata.h.font;
-                                gc.fillText(edata.w, edata.x, edata.y);
+                                gc.font=edata["h"]["font"];
+                                gc.fillText(edata["w"], edata["x"], edata["y"]);
                                 break;
                         }
                     }
-                    if(defined(edata.sc)) {
-                        gc.strokeStyle=edata.sc;
-                        gc.lineWidth=edata.ss;
-                        switch(element.type) {
+                    if(defined(edata["sc"])) {
+                        gc.strokeStyle=edata["sc"];
+                        gc.lineWidth=edata["ss"];
+                        switch(element["type"]) {
                             case DT.SQUARE:
-                                gc.strokeRect(edata.x, edata.y, edata.w, edata.h);
+                                gc.strokeRect(edata["x"], edata["y"], edata["w"], edata["h"]);
                                 break;
                             
                             case DT.ELLIPSE:
-                                gc.ellipse(edata.x, edata.y, edata.w, edata.h);
+                                gc.ellipse(edata["x"], edata["y"], edata["w"], edata["h"]);
                                 gc.stroke();
                                 break;
                             
                             case DT.LINE:
-                                gc.moveTo(edata.x, edata.y);
-                                gc.lineTo(edata.w, edata.h);
+                                gc.moveTo(edata["x"], edata["y"]);
+                                gc.lineTo(edata["x"]+edata["w"], edata["y"]+edata["h"]);
                                 gc.stroke();
                                 break;
 
                             case DT.TEXT:
-                                gc.font=edata.h.font;
-                                gc.strokeText(edata.w, edata.x, edata.y);
+                                gc.font=edata["h"]["font"];
+                                gc.strokeText(edata["w"], edata["x"], edata["y"]);
                                 break;
                         }
                     }
@@ -189,12 +190,12 @@ function program(args) {
                 wcanvas.setAttribute("style", "left: "+window.x+"px; top: "+window.y+"px; "+zIndex);
                 
                 //Stroke window border
-                wc.strokeStyle=System.osWindowBorder;
-                wc.lineWidth=System.osWindowBorderWidth;
+                wc.strokeStyle=System["osWindowBorder"];
+                wc.lineWidth=System["osWindowBorderWidth"];
                 wc.strokeRect(0, 0, window.width, window.height);
                 //Stroke window options border
-                wc.strokeStyle=System.osWindowOptionsBorder;
-                wc.lineWidth=System.osWindowOptionsBorderWidth;
+                wc.strokeStyle=System["osWindowOptionsBorder"];
+                wc.lineWidth=System["osWindowOptionsBorderWidth"];
                 wc.beginPath();
                 wc.moveTo(0, System["osWindowOptionsHeight"]);
                 wc.lineTo(window.width, System["osWindowOptionsHeight"]);
@@ -205,7 +206,7 @@ function program(args) {
     }
     var worker=new Worker("text.js");
     worker.postMessage({action: "data", value: System});
-    worker.postMessage({action: "widthIndex", value: JSON.stringify(getWidthIndex(System.osWindowContentFont))});
+    worker.postMessage({action: "widthIndex", value: JSON.stringify(getWidthIndex(System["osWindowContentFont"]))});
     function wrapText(text, x, y, maxWidth, lineHeight, w) {
         w.isWorking=true;
         if (typeof(Worker) !== "undefined") {
@@ -274,7 +275,7 @@ function program(args) {
         for(var i=windows.length-1; i>=0; i--) {
             //Check bounds
             var w=windows[i];
-            var margin=System.osWindowResizeMargin;
+            var margin=System["osWindowResizeMargin"];
             if ((e.x>=w.x&&e.y>=w.y)&&(e.x<=w.x+w.width&&e.y<=w.y+w.height)) {
                 if(disabledList.indexOf(i)==-1) {
                     if((e.x>=w.x+margin&&e.y>=w.y+margin)&&(e.x<=w.x+w.width-margin&&e.y<=w.y+w.height-margin)) {  
@@ -309,7 +310,7 @@ function program(args) {
         if (clickedOn=="") {
             for(var i=windows.length-1; i>=0; i--) {
                 var w=windows[i];
-                var margin=System.osWindowResizeMargin;
+                var margin=System["osWindowResizeMargin"];
                 //Condition LEFT
                 if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
                     resizeOrient=Resize.LEFT;
@@ -369,60 +370,60 @@ function program(args) {
             else if (resizeOrient!=Resize.NONE) {
                 switch (resizeOrient) {
                     case Resize.LEFT:
-                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                        if (e.x<preX+preWidth-System["osWindowMinimumWidth"]) {
                             resizeWindow.x=e.x;
                             resizeWindow.width=preX-e.x+preWidth;
                         }
                         break;
                     case Resize.RIGHT:
-                        if (e.x>preX+System.osWindowMinimumWidth) {
+                        if (e.x>preX+System["osWindowMinimumWidth"]) {
                             resizeWindow.width=e.x-preX;
                         }
                         break;
                     case Resize.TOP:
-                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                        if (e.y<preY+preHeight-System["osWindowMinimumHeight"]) {
                             resizeWindow.y=e.y;
                             resizeWindow.height=preY-e.y+preHeight;
                         }
                         break;
                     case Resize.BOTTOM:
-                        if (e.y>preY+System.osWindowMinimumHeight) {
+                        if (e.y>preY+System["osWindowMinimumHeight"]) {
                             resizeWindow.height=e.y-preY;
                         }
                         break;
                     case Resize.TOP_LEFT:
-                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                        if (e.x<preX+preWidth-System["osWindowMinimumWidth"]) {
                             resizeWindow.x=e.x;
                             resizeWindow.width=preX-e.x+preWidth;
                         }
-                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                        if (e.y<preY+preHeight-System["osWindowMinimumHeight"]) {
                             resizeWindow.y=e.y;
                             resizeWindow.height=preY-e.y+preHeight;
                         }
                         break;
                     case Resize.TOP_RIGHT:
-                        if (e.x>preX+System.osWindowMinimumWidth) {
+                        if (e.x>preX+System["osWindowMinimumWidth"]) {
                             resizeWindow.width=e.x-preX;
                         }
-                        if (e.y<preY+preHeight-System.osWindowMinimumHeight) {
+                        if (e.y<preY+preHeight-System["osWindowMinimumHeight"]) {
                             resizeWindow.y=e.y;
                             resizeWindow.height=preY-e.y+preHeight;
                         }
                         break;
                     case Resize.BOTTOM_LEFT:
-                        if (e.x<preX+preWidth-System.osWindowMinimumWidth) {
+                        if (e.x<preX+preWidth-System["osWindowMinimumWidth"]) {
                             resizeWindow.x=e.x;
                             resizeWindow.width=preX-e.x+preWidth;
                         }
-                        if (e.y>preY+System.osWindowMinimumHeight) {
+                        if (e.y>preY+System["osWindowMinimumHeight"]) {
                             resizeWindow.height=e.y-preY;
                         }
                         break;
                     case Resize.BOTTOM_RIGHT:
-                        if (e.x>preX+System.osWindowMinimumWidth) {
+                        if (e.x>preX+System["osWindowMinimumWidth"]) {
                             resizeWindow.width=e.x-preX;
                         }
-                        if (e.y>preY+System.osWindowMinimumHeight) {
+                        if (e.y>preY+System["osWindowMinimumHeight"]) {
                             resizeWindow.height=e.y-preY;
                         }
                         break;
@@ -443,7 +444,7 @@ function program(args) {
             for(var i=windows.length-1; i>=0; i--) {
                 if(disabledList.indexOf(i)==-1) {
                     var w=windows[i];
-                    var margin=System.osWindowResizeMargin;
+                    var margin=System["osWindowResizeMargin"];
                     //Condition LEFT
                     if ((e.x>w.x&&e.x<w.x+margin)&&(e.y>w.y+margin&&e.y<w.y+w.height-margin)) {
                         body.style.cursor="w-resize";
@@ -591,7 +592,7 @@ var ApplicationCompiler=function(appSource, dest, callback, afterCompile) {
 ApplicationCompiler.prototype.compile=function() {
     if(this.isReady) {
         var js=this.appCode;
-        var completeJS="importScripts('"+System.scriptLangPath+"');\n"+js;
+        var completeJS="importScripts('"+System["scriptLangPath"]+"');\n"+js;
         this.compiledCode=completeJS/*.toHex()*/;
         return {code: this.compiledCode, callback: this.execAfter, dest: this.dest};
     }
@@ -612,13 +613,13 @@ var ApplicationExecutor=function(path) {
     this.windowIDs=[];
 }
 ApplicationExecutor.prototype.start=function() {
-    this.internalWorker=new Worker("get.php?content_type=text/javascript&path="+this.path);
-    this.internalWorker.thisEquiv=this;
-    this.internalWorker.onmessage=ApplicationExecutor.handleRequest;
+    this["internalWorker"]=new Worker("get.php?content_type=text/javascript&path="+this.path);
+    this["internalWorker"].thisEquiv=this;
+    this["internalWorker"].onmessage=ApplicationExecutor.handleRequest;
 }
 ApplicationExecutor.handleRequest=function(msg) {
     ApplicationExecutor.support.exe=this.thisEquiv;
-    ApplicationExecutor.support[msg.data.action](msg.data.params);
+    ApplicationExecutor.support[msg.data["action"]](msg.data["params"]);
 }
 ApplicationExecutor.support={
     "System.println": function(msg) {
@@ -626,15 +627,16 @@ ApplicationExecutor.support={
     },
     "System.Window.<init>": function(obj) {
         var created;
-        windows.push(created=new Window(obj.x, obj.y, obj.width, obj.height, obj.title, undefined, obj.graphics.data));
+        console.log(obj);
+        windows.push(created=new Window(obj.x, obj.y, obj.width, obj.height, obj.title, undefined, obj["graphics"]["data"]));
         created.setExecutionEnvironment(this.exe);
         created.hide();
         created.addEventListener("any", function(e) {
-            var executor=e.executor;
-            e.windowID=ApplicationExecutor.support["System.Window.getLocalID"](e.window);
-            delete e.window;
-            delete e.executor;
-            executor.internalWorker.postMessage(e);
+            var executor=e["executor"];
+            e["windowID"]=ApplicationExecutor.support["System.Window.getLocalID"](e["window"]);
+            delete e["window"];
+            delete e["executor"];
+            executor["internalWorker"].postMessage(e);
         });
         this.exe.windowIDs.push({
             global: created.id,
@@ -733,7 +735,7 @@ function getWidthIndex(font) {
     return out;
 }
 Image.getIcon=function(src) {
-    var icon=new Image(System.osWindowIconWidth, System.osWindowIconHeight);
+    var icon=new Image(System["osWindowIconWidth"], System["osWindowIconHeight"]);
     icon.src=src;
     return icon;
 }
@@ -800,8 +802,8 @@ Window.prototype.hide=function() {
         x: this.x,
         y: this.y 
     };
-    this.x=-this.width-System.osWindowBorderWidth;
-    this.y=-this.height-System.osWindowBorderWidth;
+    this.x=-this.width-System["osWindowBorderWidth"];
+    this.y=-this.height-System["osWindowBorderWidth"];
     this.shown=false;
 }
 Window.prototype.update=function(xOrObj, y, width, height, title, icon, gdata) {
@@ -810,11 +812,11 @@ Window.prototype.update=function(xOrObj, y, width, height, title, icon, gdata) {
         // this.y=xOrObj.y;
         // this.width=xOrObj.width;
         // this.height=xOrObj.height;
-        this.title=xOrObj.title;
-        if(typeof xOrObj.icon=="undefined") this.icon=Image.getIcon(System.osApplicationIcon);
-        else this.icon=xOrObj.icon;
-        if(typeof xOrObj.graphics.data=="undefined") this.gdata=Defaults.windowGData;
-        else this.gdata=xOrObj.graphics.data;
+        this.title=xOrObj["title"];
+        if(typeof xOrObj["icon"]=="undefined") this.icon=Image.getIcon(System["osApplicationIcon"]);
+        else this.icon=xOrObj["icon"];
+        if(typeof xOrObj["graphics"]["data"]=="undefined") this.gdata=Defaults.windowGData;
+        else this.gdata=xOrObj["graphics"].data;
     }
     else {
         this.x=xOrObj;
@@ -822,7 +824,7 @@ Window.prototype.update=function(xOrObj, y, width, height, title, icon, gdata) {
         this.width=width;
         this.height=height;
         this.title=title;
-        if(typeof icon=="undefined") this.icon=Image.getIcon(System.osApplicationIcon);
+        if(typeof icon=="undefined") this.icon=Image.getIcon(System["osApplicationIcon"]);
         else this.icon=icon;
         if(typeof gdata=="undefined") this.gdata=Defaults.windowGData;
         else this.gdata=gdata;
@@ -832,9 +834,9 @@ Window.prototype.addEventListener=function(name, callback) {
     this.event[name].push(callback);
 }
 Window.prototype.triggerEvent=function(name, data) {
-    data.eventType=name;
-    data.window=this;
-    data.executor=this.exeEnvironment;
+    data["eventType"]=name;
+    data["window"]=this;
+    data["executor"]=this.exeEnvironment;
     for(var i=0; i<this.event[name].length; i++) {
         this.event[name][i](data);
     }

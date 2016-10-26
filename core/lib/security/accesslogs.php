@@ -24,8 +24,12 @@
     $pdf->setPaper("A4", "portrait");
 
     $pdf->render();
-    $myfile = fopen(".\logs\dump.pdf", "w") or die("Unable to open file!");
+    $myfile = fopen("dump.pdf", "w") or die("Unable to open file!");
     fwrite($myfile, "");
     fclose($myfile);
-    file_put_contents(".\logs\dump.pdf", $pdf->output());
+    file_put_contents("dump.pdf", $pdf->output());
+
+    header("Content-type: application/pdf");
+
+    echo file_get_contents("dump.pdf");
 ?>

@@ -8,6 +8,9 @@
         tr {
             border: 2px solid black;
         }
+        td {
+            border: 2px solid black;
+        }
     </style>
     <table>
         <tr>

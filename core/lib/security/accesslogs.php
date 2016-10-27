@@ -1,28 +1,69 @@
 <?php
+require 'database.php';
 require_once $_SERVER["DOCUMENT_ROOT"].'/api/PDF/autoload.inc.php';
 
 use Dompdf\Dompdf;
 $pdf=new DomPdf();
-$pdf->loadHtml('
+
+$html='
 <style>
-    tr {
-        border: 2px solid black;
+    table {
+        color: #333;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 8pt;
+        width: 640px;
+        border-collapse:
+        collapse; border-spacing: 0;
     }
+    th {
+        font-size: 10pt;
+    }
+    td, th {
+        border: 1px solid black; /* No more visible border */
+        padding: 0px;
+        margin: 0px;
+    }
+
+    th {
+        background: #DFDFDF; /* Darken header a bit */
+        font-weight: bold;
+    }
+
     td {
-        border: 2px solid black;
+        background: #FAFAFA;
+        text-align: left;
+        padding-left: 3px;
     }
 </style>
 <table>
-    <tr>
-        <td>Box 1</td>
-        <td>Box 2</td>
-    </tr>
-    <tr>
-        <td>Box 3</td>
-        <td>Box 4</td>
-    </tr>
-</table>
-');
+';
+$sql="SELECT * FROM `storage_attempts` ORDER BY `id`";
+if($result=$server->query($sql)) {
+    $first=true;
+    $count=0;
+    while($row=$result->fetch_assoc()) {
+        if($first) {
+            $html.="<tr>";
+            foreach($row as $key=>$val) {
+                $html.="<th>".$key."</th>";
+            }
+            $html.="</tr>";
+        }
+        $html.="<tr>";
+        foreach($row as $key=>$val) {
+            $html.="<td>".$val."</td>";
+        }
+        $html.="</tr>";
+
+        $first=false;
+        $count++;
+    }
+}
+else {
+    $html.="<tr><th>Error!</th></tr>";
+}
+
+$pdf->loadHtml($html);
 
 //Set paper to portrait
 $pdf->setPaper("A4", "portrait");

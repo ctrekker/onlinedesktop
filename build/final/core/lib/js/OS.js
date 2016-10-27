@@ -174,7 +174,7 @@ function program(args) {
                             
                             case DT.LINE:
                                 gc.moveTo(edata["x"], edata["y"]);
-                                gc.lineTo(edata["x"]+edata["w"], edata["y"]+edata["h"]);
+                                gc.lineTo(edata["w"], edata["h"]);
                                 gc.stroke();
                                 break;
 

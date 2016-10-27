@@ -1,9 +1,20 @@
 <?php
 require 'database.php';
+require 'admins.php';
 
 session_start();
 use Dompdf\Dompdf;
-if($_SESSION["id"]==1) {
+
+$valid=false;
+//Check admins
+if(isset($_SESSION["id"])) {
+    foreach($admins as $id) {
+        if($id==$_SESSION["id"]) {
+            $valid=true;
+        }
+    }
+}
+if($valid) {
     require_once $_SERVER["DOCUMENT_ROOT"].'/api/PDF/autoload.inc.php';
 
     $pdf=new DomPdf();

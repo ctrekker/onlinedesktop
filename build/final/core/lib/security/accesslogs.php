@@ -6,7 +6,10 @@ session_start();
 use Dompdf\Dompdf;
 
 $content="pdf";
-if(isset($_GET["content"])) $content=$_GET["content"];
+if(isset($_GET["type"])) $content=$_GET["type"];
+$table="storage_attempts";
+if(isset($_GET["table"])) $table=$_GET["table"];
+
 $valid=false;
 //Check admins
 if(isset($_SESSION["id"])) {
@@ -17,7 +20,8 @@ if(isset($_SESSION["id"])) {
     }
 }
 if($valid) {
-    if($content="pdf") {
+    $sql="SELECT * FROM `$table`";
+    if($content=="pdf") {
         require_once $_SERVER["DOCUMENT_ROOT"].'/api/PDF/autoload.inc.php';
 
         $pdf=new DomPdf();
@@ -54,7 +58,7 @@ if($valid) {
         </style>
         <table>
         ';
-        $sql="SELECT * FROM `storage_attempts` ORDER BY `id`";
+
         if($result=$server->query($sql)) {
             $first=true;
             $count=0;
@@ -97,22 +101,24 @@ if($valid) {
         echo file_get_contents("dump.pdf");
         unlink("dump.pdf");
     }
-    else if($content="csv") {
+    else if($content=="csv") {
         $output="";
         if($result=$server->query($sql)) {
             while($row=$result->fetch_assoc()) {
                 $line="";
                 foreach($row as $key=>$value) {
-                    $line.="\"$value\",";
+                    $line.="\"".htmlspecialchars($value)."\",";
                 }
-                $output.=rtrim($line);
+                
+                $output.=rtrim($line, ",");
+                $output.="\n";
             }
         }
         else {
             $output="An Error Occured!";
         }
-        header("Content-type: text/csv");
-        echo $out;
+        header("Content-type: text/plain");
+        echo $output;
     }
 }
 else {

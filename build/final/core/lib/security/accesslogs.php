@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER["DOCUMENT_ROOT"].'/api/PDF/autoload.inc.php';
 require 'database.php';
+require_once $_SERVER["DOCUMENT_ROOT"].'/api/PDF/autoload.inc.php';
 
 use Dompdf\Dompdf;
 $pdf=new DomPdf();
@@ -78,4 +78,5 @@ file_put_contents("dump.pdf", $pdf->output());
 header("Content-type: application/pdf");
 
 echo file_get_contents("dump.pdf");
+unlink("dump.pdf");
 ?>

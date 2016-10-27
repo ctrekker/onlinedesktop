@@ -6,7 +6,7 @@ session_start();
 use Dompdf\Dompdf;
 
 $content="pdf";
-if(isset($_GET["content"])) $content=$_GET["content"];
+if(isset($_GET["out"])) $content=$_GET["out"];
 $valid=false;
 //Check admins
 if(isset($_SESSION["id"])) {

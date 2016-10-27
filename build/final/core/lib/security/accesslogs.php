@@ -98,7 +98,21 @@ if($valid) {
         unlink("dump.pdf");
     }
     else if($content="csv") {
-
+        $output="";
+        if($result=$server->query($sql)) {
+            while($row=$result->fetch_assoc()) {
+                $line="";
+                foreach($row as $key=>$value) {
+                    $line.="\"$value\",";
+                }
+                $output.=rtrim($line);
+            }
+        }
+        else {
+            $output="An Error Occured!";
+        }
+        header("Content-type: text/csv");
+        echo $out;
     }
 }
 else {

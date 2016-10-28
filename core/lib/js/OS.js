@@ -134,7 +134,6 @@ function program(args) {
                 for(var n=0; n<window.gdata.elements.length; n++) {
                     var element=window.gdata.elements[n];
                     var edata=element["data"];
-                    //console.log(element);
 
                     //Handle shape drawing
                     if(element["type"]==DT.TEXT) {
@@ -145,11 +144,12 @@ function program(args) {
                         gc.fillStyle=edata["fc"];
                         switch(element["type"]) {
                             case DT.SQUARE:
-                                gc.fillRect(edata["x"], edata["y"], edata["w"], edata["h"]);
+                                gc.roundRect(edata["x"], edata["y"], edata["w"], edata["h"], o(edata["e"]["round"], 0));
+                                gc.fill();
                                 break;
                             
                             case DT.ELLIPSE:
-                                gc.ellipse(edata["x"]+edata["w"]/2, edata["y"]+edata["h"]/2, edata["w"]/2, edata["h"]/2, 0, 0, Math.PI*2);
+                                gc.betterEllipse(edata["x"]+edata["w"]/2, edata["y"]+edata["h"]/2, edata["w"], edata["h"]);
                                 gc.fill();
                                 break;
 
@@ -164,17 +164,20 @@ function program(args) {
                         gc.lineWidth=edata["ss"];
                         switch(element["type"]) {
                             case DT.SQUARE:
-                                gc.strokeRect(edata["x"], edata["y"], edata["w"], edata["h"]);
+                                gc.roundRect(edata["x"], edata["y"], edata["w"], edata["h"], o(edata["e"]["round"], 0));
+                                gc.stroke();
                                 break;
                             
                             case DT.ELLIPSE:
-                                gc.ellipse(edata["x"], edata["y"], edata["w"], edata["h"]);
+                                gc.betterEllipse(edata["x"]+edata["w"]/2, edata["y"]+edata["h"]/2, edata["w"], edata["h"]);
                                 gc.stroke();
                                 break;
                             
                             case DT.LINE:
+                                gc.beginPath()
                                 gc.moveTo(edata["x"], edata["y"]);
                                 gc.lineTo(edata["w"], edata["h"]);
+                                gc.closePath();
                                 gc.stroke();
                                 break;
 
@@ -721,6 +724,37 @@ CanvasRenderingContext2D.prototype.clear = CanvasRenderingContext2D.prototype.cl
         this.restore();
     }
 };
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    r=o(r, 0);
+
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    this.beginPath();
+    this.moveTo(x+r, y);
+    this.arcTo(x+w, y,   x+w, y+h, r);
+    this.arcTo(x+w, y+h, x,   y+h, r);
+    this.arcTo(x,   y+h, x,   y,   r);
+    this.arcTo(x,   y,   x+w, y,   r);
+    this.closePath();
+    return this;
+}
+CanvasRenderingContext2D.prototype.betterEllipse=function(cx, cy, w, h) {
+    this.beginPath();
+    var lx = cx - w / 2,
+        rx = cx + w / 2,
+        ty = cy - h / 2,
+        by = cy + h / 2;
+    var magic = 0.551784;
+    var xmagic = magic * w / 2;
+    var ymagic = h * magic / 2;
+    this.moveTo(cx, ty);
+    this.bezierCurveTo(cx + xmagic, ty, rx, cy - ymagic, rx, cy);
+    this.bezierCurveTo(rx, cy + ymagic, cx + xmagic, by, cx, by);
+    this.bezierCurveTo(cx - xmagic, by, lx, cy + ymagic, lx, cy);
+    this.bezierCurveTo(lx, cy - ymagic, cx - xmagic, ty, cx, ty);
+    this.closePath();
+    return this;
+}
 function getWidthIndex(font) {
     var out=[];
     var vals="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()`~-=_+[]{}|\"\';:/?>.<, ".split("");

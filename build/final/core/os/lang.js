@@ -134,7 +134,7 @@ Graphics.prototype={
         }
     }
 };
-function Shape(type, x, y, w, h, fc, sc, ss) {
+function Shape(type, x, y, w, h, fc, sc, ss, e) {
     var o=System.favor;
     this.type=o(type, ShapeType.RECTANGLE);
     //Data preset
@@ -153,6 +153,8 @@ function Shape(type, x, y, w, h, fc, sc, ss) {
     this.data.sc=o(sc, null);
     //Stroke Size (ss);
     this.data.ss=o(ss+0.01, 1.01);
+    //Additional data (extra=e) 
+    this.data.e=o(e, {});
 }
 Shape.prototype={
     setX: function(x) {this.x=x},
@@ -239,8 +241,11 @@ function Button(text, x, y, w, h) {
     this.component.y=y;
     this.component.w=w;
     this.component.h=h;
-    var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, undefined, Button.STROKE, Button.OUTLINE);
-    var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL);
+    var addData={
+        round: 5
+    };
+    var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.STROKE, Button.OUTLINE, addData);
+    var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, undefined, undefined, addData);
     var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
         font: Button.FONT,
         baseline: TextBaseline.MIDDLE,

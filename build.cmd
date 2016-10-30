@@ -2,4 +2,3 @@ xcopy E:\Storage\Programming\Apps\onlinedesktop\core E:\Storage\Programming\Apps
 xcopy E:\Storage\Programming\Apps\onlinedesktop\user E:\Storage\Programming\Apps\onlinedesktop\build\final\user /e/y
 copy E:\Storage\Programming\Apps\onlinedesktop\*.php E:\Storage\Programming\Apps\onlinedesktop\build\final
 copy E:\Storage\Programming\Apps\onlinedesktop\*.txt E:\Storage\Programming\Apps\onlinedesktop\build\final
-start "" "C:\Users\ctrek\AppData\Local\Google\Chrome\Application\chrome.exe" http://www.onlinedesktop.tech --new-window

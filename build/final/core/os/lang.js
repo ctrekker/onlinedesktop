@@ -12,6 +12,11 @@ var System={
     favor: function (primary, secondary) {
         return (typeof primary=="undefined"?(typeof secondary=="function"?secondary():secondary):primary);
     },
+    Global: function() {
+        this.event={
+
+        };
+    },
     windowID: 0,
     Window: function(x, y, width, height, title) {
         var o=System.favor;
@@ -68,6 +73,31 @@ var System={
             }
         }
     }
+};
+System.globalEventHandler=new System.Global();
+addEventListener("message", function(e) {
+    var data=e.data;
+    var window=System.allWindows[data.windowID];
+    data.window=window;
+
+    var objCalls=[window, System.globalEventHandler];
+    var eventCalls=[data.eventType, "any"];
+    for(var x=0; x<objCalls.length; x++) {
+        for(var y=0; y<eventCalls.length; y++) {
+            if(typeof objCalls[x].event[eventCalls[y]]=="undefined") objCalls[x].event[eventCalls[y]]=[];
+            for(var z=0; z<objCalls[x].event[eventCalls[y]].length; z++) {
+                data.passed=objCalls[x].event[eventCalls[y]][z].passed;
+                objCalls[x].event[eventCalls[y]][z].callback(data);
+            }
+        }
+    }
+});
+System.Global.prototype.addEventListener=function(name, callback, passed) {
+    if(typeof this.event[name]=="undefined") this.event[name]=[];
+    this.event[name].push({
+        callback: callback,
+        passed: System.favor(passed, null)
+    });
 };
 System.Window.prototype={
     show: function() {
@@ -221,24 +251,12 @@ var TextBaseline={
 Text.FONT="12px Arial";
 Text.BASELINE=TextBaseline.TOP;
 Text.ALIGN=TextAlign.LEFT;
-addEventListener("message", function(e) {
-    var data=e.data;
-    var window=System.allWindows[data.windowID];
-    data.window=window;
-
-    var eventCalls=[data.eventType, "any"];
-    for(var x=0; x<eventCalls.length; x++) {
-        for(var i=0; i<System.favor(window.event[eventCalls[x]].length, []); i++) {
-            window.event[eventCalls[x]][i].callback(data);
-        }
-    }
-});
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
     this.id=Component.ID++;
 
     this.event={
-        
+        downOn: false
     };
 }
 Component.prototype={
@@ -280,9 +298,19 @@ function Button(text, x, y, w, h) {
     this.component.add(text);
     this.shapes=this.component.shapes;
 
+
     this.addEventListener("mousedown", function(e) {
-        e.component.triggerEvent("click", e);
+        e.component.event.downOn=true;
     });
+    this.addEventListener("mouseup", function(e) {
+        if(e.component.event.downOn) {
+            e.component.triggerEvent("click", e);
+        }
+        e.component.event.downOn=false;
+    });
+    System.globalEventHandler.addEventListener("mouseup", function(e) {
+        e.passed.event.downOn=false;
+    }, this);
 }
 Button.prototype.addEventListener=Component.prototype.addEventListener;
 Button.prototype.triggerEvent=Component.prototype.triggerEvent;

@@ -8,7 +8,7 @@ function main() {
     var button=new Button("OK", 100, 100);
     g.addComponent(button); 
     button.addEventListener("click", function(e) {
-        
+        console.log("Click!");
     });                                                                                                    
     window.show();
 }

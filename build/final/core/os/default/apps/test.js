@@ -8,8 +8,7 @@ function main() {
     var button=new Button("OK", 100, 100);
     g.addComponent(button); 
     button.addEventListener("click", function(e) {
-        var window=new System.Window(0, 0, 100, 50, "You clicked OK!");
-        window.show();
+        console.log("Click!");
     });                                                                                                    
     window.show();
 }

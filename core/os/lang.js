@@ -33,6 +33,18 @@ var System={
             any: []
         };
 
+        this.addEventListener("any", function(e) {
+            var graphics=e.window.graphics;
+            for(var i in graphics.components) {
+                var component=graphics.components[i];
+                if(e.eventType.search("mouse")!=-1) {
+                    if((e.x>component.x&&e.y>component.y)&&(e.x<component.x+component.w&&e.y<component.y+component.h)) {
+                        e.component=component;
+                        component.triggerEvent(e.eventType, e);
+                    }
+                }
+            }
+        });
         System.allWindows.push(this);
 
         System.sendRaw({
@@ -42,17 +54,18 @@ var System={
     },
     allWindows: [],
     defaultAddEventListener: function(name, callback) {
+        if(typeof this.event[name]=="undefined") this.event[name]=[];
         this.event[name].push(callback);
     },
     defaultTriggerEvent: function(name, data) {
         data.eventType=name;
-        data.window=this;
-        data.executor=this.exeEnvironment;
-        for(var i=0; i<this.event[name].length; i++) {
-            this.event[name][i](data);
-        }
-        for(var i=0; i<this.event["any"].length; i++) {
-            this.event["any"][i](data);
+        
+        var eventCalls=[data.eventType, "any"];
+        for(var x=0; x<eventCalls.length; x++) {
+            if(typeof this.event[eventCalls[x]]=="undefined") this.event[eventCalls[x]]=[];
+            for(var i=0; i<this.event[eventCalls[x]].length; i++) {
+                this.event[eventCalls[x]][i](data);
+            }
         }
     }
 };
@@ -100,14 +113,14 @@ System.Window.prototype={
             width: this.width,
             height: this.height,
             title: this.title,
-            graphics: this.graphics,
+            graphics: this.graphics.getSend(),
             id: this.id
         };
     },
 
     //ADDS
     addEventListener: function(name, callback, component) {
-        if(this.event[name]=='undefined') this.event[name]=[];
+        if(typeof this.event[name]=='undefined') this.event[name]=[];
         this.event[name].push({component: component, callback: callback});
     },
     triggerEvent: System.defaultTriggerEvent
@@ -119,7 +132,7 @@ function Graphics() {
 
         ]
     };
-    this.window=null;
+    this.components=[];
 }
 Graphics.prototype={
     setBackground: function(color) {
@@ -129,8 +142,14 @@ Graphics.prototype={
         this.data.elements.push(shape);
     },
     addComponent: function(component) {
+        this.components.push(component);
         for(var i=0; i<component.shapes.length; i++) {
             this.data.elements.push(component.shapes[i]);
+        }
+    },
+    getSend: function() {
+        return {
+            data: this.data
         }
     }
 };
@@ -217,12 +236,18 @@ addEventListener("message", function(e) {
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
     this.id=Component.ID++;
+
+    this.event={
+        
+    };
 }
 Component.prototype={
     add: function(shape) {
         this.shapes.push(shape);
     }
 };
+Component.prototype.addEventListener=System.defaultAddEventListener;
+Component.prototype.triggerEvent=System.defaultTriggerEvent;
 Component.ID=0;
 function Button(text, x, y, w, h) {
     w=w||Button.WIDTH;
@@ -233,10 +258,9 @@ function Button(text, x, y, w, h) {
     this.y=y;
     this.w=w;
     this.h=h;
-    this.event={
-        
-    };
+
     this.component=new Component();
+    this.event=this.component.event;
     this.component.x=x;
     this.component.y=y;
     this.component.w=w;
@@ -255,9 +279,13 @@ function Button(text, x, y, w, h) {
     this.component.add(box2);
     this.component.add(text);
     this.shapes=this.component.shapes;
+
+    this.addEventListener("mousedown", function(e) {
+        e.component.triggerEvent("click", e);
+    });
 }
-Button.prototype.addEventListener=System.defaultAddEventListener;
-Button.prototype.triggerEvent=System.defaultTriggerEvent;
+Button.prototype.addEventListener=Component.prototype.addEventListener;
+Button.prototype.triggerEvent=Component.prototype.triggerEvent;
 
 Button.WIDTH=60;
 Button.HEIGHT=20;

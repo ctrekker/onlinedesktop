@@ -113,6 +113,7 @@ System.Window.prototype={
         });
     },
     update: function() {
+        this.graphics.update();
         System.sendRaw({
             action: "System.Window.update",
             params: this.getSend()
@@ -174,7 +175,19 @@ Graphics.prototype={
     addComponent: function(component) {
         this.components.push(component);
         for(var i=0; i<component.shapes.length; i++) {
+            component.shapes[i].componentID=this.components.length-1;
+            component.shapes[i].componentIndex=i;
             this.data.elements.push(component.shapes[i]);
+        }
+    },
+    update: function() {
+        for(var i=0; i<this.data.elements.length; i++) {
+            if(typeof this.data.elements[i].componentID!="undefined") {
+                var newShape=this.components[this.data.elements[i].componentID].shapes[this.data.elements[i].componentIndex];
+                newShape.componentID=this.data.elements[i].componentID;
+                newShape.componentIndex=this.data.elements[i].componentIndex;
+                this.data.elements[i]=newShape;
+            }
         }
     },
     getSend: function() {
@@ -287,14 +300,12 @@ function Button(text, x, y, w, h) {
         round: 5
     };
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.STROKE, Button.OUTLINE, addData);
-    var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, undefined, undefined, addData);
     var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
         font: Button.FONT,
         baseline: TextBaseline.MIDDLE,
         align: TextAlign.CENTER
     }, "#000");
     this.component.add(box1);
-    this.component.add(box2);
     this.component.add(text);
     this.shapes=this.component.shapes;
 
@@ -308,6 +319,17 @@ function Button(text, x, y, w, h) {
         }
         e.component.event.downOn=false;
     });
+    System.globalEventHandler.addEventListener("mousemove", function(e) {
+        var passed=e.passed;
+        if((e.x>passed.x&&e.y>passed.y)&&(e.x<passed.x+passed.w&&e.y<passed.y+passed.h)) {
+            passed.component.shapes[0]=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.HOVER_STROKE, Button.OUTLINE, addData);
+            e.window.update();
+        }
+        else {
+            passed.component.shapes[0]=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.STROKE, Button.OUTLINE, addData);
+            e.window.update();
+        }
+    }, this);
     System.globalEventHandler.addEventListener("mouseup", function(e) {
         e.passed.event.downOn=false;
     }, this);
@@ -318,7 +340,8 @@ Button.prototype.triggerEvent=Component.prototype.triggerEvent;
 Button.WIDTH=60;
 Button.HEIGHT=20;
 Button.FILL="#EEE";
-Button.STROKE="#444";
+Button.STROKE="#888";
+Button.HOVER_STROKE="#06F";
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
 (function(){

@@ -59,6 +59,26 @@ function program(args) {
             }
         ]
     });
+    var counterApp=new Application({
+        commands: [
+            {
+                action: "compile",
+                source: "/core/os/default/apps/counter.js",
+                dest: "/apps/counter.ose",
+                callback: function(code) {
+                    console.log("Counter compiled sucessfully in "+(new Date().getTime()-start).toString()+" milliseconds!");
+                    console.log("Result:\n"+code);
+                }
+            },
+            {
+                action: "execute",
+                source: "/apps/counter.ose",
+                start: function() {
+                    console.log("Finished setup after "+(new Date().getTime()-start)+" milliseconds!");
+                }
+            }
+        ]
+    });
     new Window(10, 10, 200, 100, "Test");
     new Window(100, 100, 200, 100, "Test2");
     windows[windows.length-1].addEventListener("mousedown", function(e) {
@@ -568,6 +588,7 @@ Application.run=function(runCommands) {
             break;
         }
         else if(command.action=="execute") {
+            console.log("execute");
             var appExecutor=new ApplicationExecutor(command.source);
             appExecutor.start();
             command.start();
@@ -616,32 +637,34 @@ var ApplicationExecutor=function(path) {
     this.windowIDs=[];
 }
 ApplicationExecutor.prototype.start=function() {
+    console.log("started");
     this["internalWorker"]=new Worker("get.php?content_type=text/javascript&path="+this.path);
+    console.log(this["internalWorker"]);
     this["internalWorker"].thisEquiv=this;
-    this["internalWorker"].onmessage=ApplicationExecutor.handleRequest;
+    this["internalWorker"].onmessage=this.handleRequest;
 }
-ApplicationExecutor.handleRequest=function(msg) {
-    ApplicationExecutor.support.exe=this.thisEquiv;
-    ApplicationExecutor.support[msg.data["action"]](msg.data["params"]);
+ApplicationExecutor.prototype.handleRequest=function(msg) {
+    console.log(this.support);
+    this.support[msg.data["action"]](msg.data["params"]);
 }
-ApplicationExecutor.support={
+ApplicationExecutor.prototype.support={
     "System.println": function(msg) {
         console.log(msg);
     },
     "System.Window.<init>": function(obj) {
         var created;
-        console.log(obj);
         windows.push(created=new Window(obj.x, obj.y, obj.width, obj.height, obj.title, undefined, obj["graphics"]["data"]));
-        created.setExecutionEnvironment(this.exe);
+        created.setExecutionEnvironment(this);
         created.hide();
         created.addEventListener("any", function(e) {
             var executor=e["executor"];
-            e["windowID"]=ApplicationExecutor.support["System.Window.getLocalID"](e["window"]);
+            console.log(e.window);
+            e["windowID"]=this.support["System.Window.getLocalID"](e["window"]);
             delete e["window"];
             delete e["executor"];
             executor["internalWorker"].postMessage(e);
         });
-        this.exe.windowIDs.push({
+        this.windowIDs.push({
             global: created.id,
             local: obj.id
         });
@@ -660,8 +683,8 @@ ApplicationExecutor.support={
         this["System.Window.getGlobalWindow"](obj).update(obj);
     },
     "System.Window.getGlobalID": function(obj) {
-        for(var i=0; i<this.exe.windowIDs.length; i++) {
-            var currentIDs=this.exe.windowIDs[i];
+        for(var i=0; i<this.windowIDs.length; i++) {
+            var currentIDs=this.windowIDs[i];
             if(currentIDs.local==obj.id) {
                 return currentIDs.global;
             }
@@ -671,14 +694,13 @@ ApplicationExecutor.support={
         return windows.findID(this["System.Window.getGlobalID"](obj));
     },
     "System.Window.getLocalID": function(obj) {
-        for(var i=0; i<this.exe.windowIDs.length; i++) {
-            var currentIDs=this.exe.windowIDs[i];
+        for(var i=0; i<this.windowIDs.length; i++) {
+            var currentIDs=this.windowIDs[i];
             if(currentIDs.global==obj.id) {
                 return currentIDs.local;
             }
         }
-    },
-    exe: null
+    }
 }
 // If the primary value is defined, it will return that value. If it is
 // undefined, then it will return the second value. The special thing

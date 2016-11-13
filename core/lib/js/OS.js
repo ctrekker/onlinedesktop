@@ -39,7 +39,7 @@ function program(args) {
     
     var compileStartTime=new Date().getTime();
     windows=[];
-    var app=new Application({
+    /*var app=new Application({
         commands: [
             {
                 action: "compile",
@@ -53,6 +53,26 @@ function program(args) {
             {
                 action: "execute",
                 source: "/apps/test.ose",
+                start: function() {
+                    console.log("Finished setup after "+(new Date().getTime()-start)+" milliseconds!");
+                }
+            }
+        ]
+    });*/
+    var counterApp=new Application({
+        commands: [
+            {
+                action: "compile",
+                source: "/core/os/default/apps/counter.js",
+                dest: "/apps/counter.ose",
+                callback: function(code) {
+                    console.log("Counter compiled sucessfully in "+(new Date().getTime()-start).toString()+" milliseconds!");
+                    console.log("Result:\n"+code);
+                }
+            },
+            {
+                action: "execute",
+                source: "/apps/counter.ose",
                 start: function() {
                     console.log("Finished setup after "+(new Date().getTime()-start)+" milliseconds!");
                 }
@@ -77,9 +97,12 @@ function program(args) {
         for(var i=0; i<windows.length; i++) {
             //Window
             var window=windows[i];
+
+            var wcanvas=document.getElementById("wcanvas_"+window.id);
+            var gcanvas=document.getElementById("gcanvas_"+window.id);
             if(window.shown) {
                 //Create cropping canvas
-                var wcanvas=document.getElementById("wcanvas_"+window.id);
+                
                 if(wcanvas==null) {
                     wcanvas=document.createElement("canvas");
                     wcanvas.setAttribute("class", "dynamic-canvas");
@@ -90,7 +113,6 @@ function program(args) {
                 wcanvas.height=window.height;
                 var wc=wcanvas.getContext("2d");
 
-                var gcanvas=document.getElementById("gcanvas_"+window.id);
                 if(gcanvas==null) {
                     gcanvas=document.createElement("canvas");
                     gcanvas.setAttribute("class", "dynamic-canvas");
@@ -141,7 +163,7 @@ function program(args) {
                         gc.textAlign=edata["h"]["align"];
                     }
                     if(defined(edata["fc"])) {
-                        gc.fillStyle=edata["fc"];
+                        gc.fillStyle=edata["fc"]["data"];
                         switch(element["type"]) {
                             case DT.SQUARE:
                                 gc.roundRect(edata["x"], edata["y"], edata["w"], edata["h"], o(edata["e"]["round"], 0));
@@ -160,7 +182,7 @@ function program(args) {
                         }
                     }
                     if(defined(edata["sc"])) {
-                        gc.strokeStyle=edata["sc"];
+                        gc.strokeStyle=edata["sc"]["data"];
                         gc.lineWidth=edata["ss"];
                         switch(element["type"]) {
                             case DT.SQUARE:
@@ -203,6 +225,12 @@ function program(args) {
                 wc.moveTo(0, System["osWindowOptionsHeight"]);
                 wc.lineTo(window.width, System["osWindowOptionsHeight"]);
                 wc.stroke();
+            }
+            else {
+                if(wcanvas!=null&&gcanvas!=null) {
+                    wcanvas.setAttribute("style", "hidden");
+                    gcanvas.setAttribute("style", "hidden");
+                }
             }
         }
         firstTime=false;
@@ -618,28 +646,31 @@ var ApplicationExecutor=function(path) {
 ApplicationExecutor.prototype.start=function() {
     this["internalWorker"]=new Worker("get.php?content_type=text/javascript&path="+this.path);
     this["internalWorker"].thisEquiv=this;
-    this["internalWorker"].onmessage=ApplicationExecutor.handleRequest;
+    var thisExt=this;
+    this["internalWorker"].onmessage=function(e) {
+        e.executor=thisExt;
+        thisExt.handleRequest(e);
+    }
 }
-ApplicationExecutor.handleRequest=function(msg) {
-    ApplicationExecutor.support.exe=this.thisEquiv;
-    ApplicationExecutor.support[msg.data["action"]](msg.data["params"]);
+ApplicationExecutor.prototype.handleRequest=function(msg) {
+    msg.executor.support.exe=msg.executor;
+    msg.executor.support[msg.data["action"]](msg.data["params"]);
 }
-ApplicationExecutor.support={
+ApplicationExecutor.prototype.support={
     "System.println": function(msg) {
         console.log(msg);
     },
     "System.Window.<init>": function(obj) {
         var created;
-        console.log(obj);
         windows.push(created=new Window(obj.x, obj.y, obj.width, obj.height, obj.title, undefined, obj["graphics"]["data"]));
-        created.setExecutionEnvironment(this.exe);
+        created.setExecutionEnvironment(this);
         created.hide();
         created.addEventListener("any", function(e) {
             var executor=e["executor"];
-            e["windowID"]=ApplicationExecutor.support["System.Window.getLocalID"](e["window"]);
+            e["windowID"]=executor["System.Window.getLocalID"](e["window"]);
             delete e["window"];
             delete e["executor"];
-            executor["internalWorker"].postMessage(e);
+            executor.exe["internalWorker"].postMessage(e);
         });
         this.exe.windowIDs.push({
             global: created.id,
@@ -678,8 +709,8 @@ ApplicationExecutor.support={
             }
         }
     },
-    exe: null
-}
+    exe: this
+};
 // If the primary value is defined, it will return that value. If it is
 // undefined, then it will return the second value. The special thing
 // about this is that you can insert a function as the second parameter
@@ -806,6 +837,15 @@ function findWindowInArray(id, list) {
     }
 }
 
+function ExternalEventHandler(callback, pass) {
+    this.callback=callback;
+    this.pass=pass;
+}
+ExternalEventHandler.prototype.handler=function(e) {
+    e.passed=this.pass;
+    console.log(e);
+    this.callback(e);
+}
 
 function Window(x, y, width, height, title, icon, gdata) {
     this.update(x, y, width, height, title, icon, gdata);

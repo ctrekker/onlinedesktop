@@ -58,6 +58,10 @@ var System={
         });
     },
     allWindows: [],
+    defined: function(var0) {
+        if(typeof var0!="undefined") return true;
+        return false;
+    },
     defaultAddEventListener: function(name, callback) {
         if(typeof this.event[name]=="undefined") this.event[name]=[];
         this.event[name].push(callback);
@@ -113,6 +117,7 @@ System.Window.prototype={
         });
     },
     update: function() {
+        this.graphics.update();
         System.sendRaw({
             action: "System.Window.update",
             params: this.getSend()
@@ -174,7 +179,19 @@ Graphics.prototype={
     addComponent: function(component) {
         this.components.push(component);
         for(var i=0; i<component.shapes.length; i++) {
+            component.shapes[i].componentID=this.components.length-1;
+            component.shapes[i].componentIndex=i;
             this.data.elements.push(component.shapes[i]);
+        }
+    },
+    update: function() {
+        for(var i=0; i<this.data.elements.length; i++) {
+            if(typeof this.data.elements[i].componentID!="undefined") {
+                var newShape=this.components[this.data.elements[i].componentID].shapes[this.data.elements[i].componentIndex];
+                newShape.componentID=this.data.elements[i].componentID;
+                newShape.componentIndex=this.data.elements[i].componentIndex;
+                this.data.elements[i]=newShape;
+            }
         }
     },
     getSend: function() {
@@ -234,6 +251,12 @@ function Text(text, x, y, data, fc, sc, ss) {
     this.type=shape.type;
     this.data=shape.data;
 }
+Text.prototype.getText=function() {
+    return this.data.w;
+}
+Text.prototype.setText=function(text) {
+    this.data.w=text;
+}
 var TextAlign={
     START: "start",
     END: "end",
@@ -251,6 +274,36 @@ var TextBaseline={
 Text.FONT="12px Arial";
 Text.BASELINE=TextBaseline.TOP;
 Text.ALIGN=TextAlign.LEFT;
+function Color(params) {
+    if(typeof params=="string") {
+        this.data=params;
+        this.hex=params;
+    }
+    else if(typeof params=="object") {
+        if(System.defined(params.r)&&System.defined(params.g)&&System.defined(params.b)) {
+            //Convert rgb to hex
+
+            function componentToHex(c) {
+                var hex = c.toString(16);
+                return hex.length == 1 ? "0" + hex : hex;
+            }
+
+            this.hex="#" + componentToHex(params.r) + componentToHex(params.g) + componentToHex(params.b);
+            this.data=this.hex;
+            this.rgb=params;
+        }
+    }
+}
+Color.BLACK=new Color("#000");
+Color.WHITE=new Color("#FFF");
+Color.RED=new Color("#F00");
+Color.ORANGE=new Color("#F90");
+Color.YELLOW=new Color("#FF0");
+Color.GREEN=new Color("#0F0");
+Color.BLUE=new Color("#00F");
+Color.CYAN=new Color("#0FF");
+Color.PURPLE=new Color("#800080");
+Color.MAGNETA=new Color("#F0F");
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
     this.id=Component.ID++;
@@ -287,14 +340,12 @@ function Button(text, x, y, w, h) {
         round: 5
     };
     var box1=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.STROKE, Button.OUTLINE, addData);
-    var box2=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, undefined, undefined, addData);
     var text=new Text(text, x+Button.WIDTH/2, y+Button.HEIGHT/2, {
         font: Button.FONT,
         baseline: TextBaseline.MIDDLE,
         align: TextAlign.CENTER
-    }, "#000");
+    }, Button.TEXT_FILL);
     this.component.add(box1);
-    this.component.add(box2);
     this.component.add(text);
     this.shapes=this.component.shapes;
 
@@ -308,6 +359,17 @@ function Button(text, x, y, w, h) {
         }
         e.component.event.downOn=false;
     });
+    System.globalEventHandler.addEventListener("mousemove", function(e) {
+        var passed=e.passed;
+        if((e.x>passed.x&&e.y>passed.y)&&(e.x<passed.x+passed.w&&e.y<passed.y+passed.h)) {
+            passed.component.shapes[0]=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.HOVER_STROKE, Button.OUTLINE, addData);
+            e.window.update();
+        }
+        else {
+            passed.component.shapes[0]=new Shape(ShapeType.RECTANGLE, x, y, w, h, Button.FILL, Button.STROKE, Button.OUTLINE, addData);
+            e.window.update();
+        }
+    }, this);
     System.globalEventHandler.addEventListener("mouseup", function(e) {
         e.passed.event.downOn=false;
     }, this);
@@ -317,10 +379,12 @@ Button.prototype.triggerEvent=Component.prototype.triggerEvent;
 
 Button.WIDTH=60;
 Button.HEIGHT=20;
-Button.FILL="#EEE";
-Button.STROKE="#444";
+Button.FILL=new Color("#EEE");
+Button.STROKE=new Color("#888");
+Button.HOVER_STROKE=new Color("#06F");
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
+Button.TEXT_FILL=Color.BLACK;
 (function(){
     //delete console;
     main();

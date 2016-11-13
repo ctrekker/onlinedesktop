@@ -31,6 +31,7 @@
         <script type="text/javascript" src="../core/lib/js/OS.js"></script>
     </head>
     <body>
+        <script src="../core/lib/js/analytics.js"></script>
         <canvas id="desktop"></canvas>
     </body>
 </html>

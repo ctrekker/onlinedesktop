@@ -39,7 +39,7 @@ function program(args) {
     
     var compileStartTime=new Date().getTime();
     windows=[];
-    var app=new Application({
+    /*var app=new Application({
         commands: [
             {
                 action: "compile",
@@ -58,7 +58,7 @@ function program(args) {
                 }
             }
         ]
-    });
+    });*/
     var counterApp=new Application({
         commands: [
             {
@@ -97,9 +97,12 @@ function program(args) {
         for(var i=0; i<windows.length; i++) {
             //Window
             var window=windows[i];
+
+            var wcanvas=document.getElementById("wcanvas_"+window.id);
+            var gcanvas=document.getElementById("gcanvas_"+window.id);
             if(window.shown) {
                 //Create cropping canvas
-                var wcanvas=document.getElementById("wcanvas_"+window.id);
+                
                 if(wcanvas==null) {
                     wcanvas=document.createElement("canvas");
                     wcanvas.setAttribute("class", "dynamic-canvas");
@@ -110,7 +113,6 @@ function program(args) {
                 wcanvas.height=window.height;
                 var wc=wcanvas.getContext("2d");
 
-                var gcanvas=document.getElementById("gcanvas_"+window.id);
                 if(gcanvas==null) {
                     gcanvas=document.createElement("canvas");
                     gcanvas.setAttribute("class", "dynamic-canvas");
@@ -161,7 +163,7 @@ function program(args) {
                         gc.textAlign=edata["h"]["align"];
                     }
                     if(defined(edata["fc"])) {
-                        gc.fillStyle=edata["fc"];
+                        gc.fillStyle=edata["fc"]["data"];
                         switch(element["type"]) {
                             case DT.SQUARE:
                                 gc.roundRect(edata["x"], edata["y"], edata["w"], edata["h"], o(edata["e"]["round"], 0));
@@ -180,7 +182,7 @@ function program(args) {
                         }
                     }
                     if(defined(edata["sc"])) {
-                        gc.strokeStyle=edata["sc"];
+                        gc.strokeStyle=edata["sc"]["data"];
                         gc.lineWidth=edata["ss"];
                         switch(element["type"]) {
                             case DT.SQUARE:
@@ -223,6 +225,12 @@ function program(args) {
                 wc.moveTo(0, System["osWindowOptionsHeight"]);
                 wc.lineTo(window.width, System["osWindowOptionsHeight"]);
                 wc.stroke();
+            }
+            else {
+                if(wcanvas!=null&&gcanvas!=null) {
+                    wcanvas.setAttribute("style", "hidden");
+                    gcanvas.setAttribute("style", "hidden");
+                }
             }
         }
         firstTime=false;
@@ -588,7 +596,6 @@ Application.run=function(runCommands) {
             break;
         }
         else if(command.action=="execute") {
-            console.log("execute");
             var appExecutor=new ApplicationExecutor(command.source);
             appExecutor.start();
             command.start();
@@ -637,15 +644,17 @@ var ApplicationExecutor=function(path) {
     this.windowIDs=[];
 }
 ApplicationExecutor.prototype.start=function() {
-    console.log("started");
     this["internalWorker"]=new Worker("get.php?content_type=text/javascript&path="+this.path);
-    console.log(this["internalWorker"]);
     this["internalWorker"].thisEquiv=this;
-    this["internalWorker"].onmessage=this.handleRequest;
+    var thisExt=this;
+    this["internalWorker"].onmessage=function(e) {
+        e.executor=thisExt;
+        thisExt.handleRequest(e);
+    }
 }
 ApplicationExecutor.prototype.handleRequest=function(msg) {
-    console.log(this.support);
-    this.support[msg.data["action"]](msg.data["params"]);
+    msg.executor.support.exe=msg.executor;
+    msg.executor.support[msg.data["action"]](msg.data["params"]);
 }
 ApplicationExecutor.prototype.support={
     "System.println": function(msg) {
@@ -658,13 +667,12 @@ ApplicationExecutor.prototype.support={
         created.hide();
         created.addEventListener("any", function(e) {
             var executor=e["executor"];
-            console.log(e.window);
-            e["windowID"]=this.support["System.Window.getLocalID"](e["window"]);
+            e["windowID"]=executor["System.Window.getLocalID"](e["window"]);
             delete e["window"];
             delete e["executor"];
-            executor["internalWorker"].postMessage(e);
+            executor.exe["internalWorker"].postMessage(e);
         });
-        this.windowIDs.push({
+        this.exe.windowIDs.push({
             global: created.id,
             local: obj.id
         });
@@ -683,8 +691,8 @@ ApplicationExecutor.prototype.support={
         this["System.Window.getGlobalWindow"](obj).update(obj);
     },
     "System.Window.getGlobalID": function(obj) {
-        for(var i=0; i<this.windowIDs.length; i++) {
-            var currentIDs=this.windowIDs[i];
+        for(var i=0; i<this.exe.windowIDs.length; i++) {
+            var currentIDs=this.exe.windowIDs[i];
             if(currentIDs.local==obj.id) {
                 return currentIDs.global;
             }
@@ -694,14 +702,15 @@ ApplicationExecutor.prototype.support={
         return windows.findID(this["System.Window.getGlobalID"](obj));
     },
     "System.Window.getLocalID": function(obj) {
-        for(var i=0; i<this.windowIDs.length; i++) {
-            var currentIDs=this.windowIDs[i];
+        for(var i=0; i<this.exe.windowIDs.length; i++) {
+            var currentIDs=this.exe.windowIDs[i];
             if(currentIDs.global==obj.id) {
                 return currentIDs.local;
             }
         }
-    }
-}
+    },
+    exe: this
+};
 // If the primary value is defined, it will return that value. If it is
 // undefined, then it will return the second value. The special thing
 // about this is that you can insert a function as the second parameter
@@ -828,6 +837,15 @@ function findWindowInArray(id, list) {
     }
 }
 
+function ExternalEventHandler(callback, pass) {
+    this.callback=callback;
+    this.pass=pass;
+}
+ExternalEventHandler.prototype.handler=function(e) {
+    e.passed=this.pass;
+    console.log(e);
+    this.callback(e);
+}
 
 function Window(x, y, width, height, title, icon, gdata) {
     this.update(x, y, width, height, title, icon, gdata);

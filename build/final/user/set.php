@@ -1,11 +1,11 @@
 <?php
-    require '../core/lib/security/secure.php';
-    require '../core/lib/security/database.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/secure.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/database.php';
 
-    session_start();
+    if (!isset($_SESSION)) session_start();
 
     $action="SET";
-    require '../core/lib/security/storagelog.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/storagelog.php';
 
     //Make sure all required variables exist
     if(isset($_SESSION["username"])&&isset($_SESSION["password"])&&isset($_SESSION["id"])&&isset($_SESSION["ip"])&&isset($_POST["path"])&&isset($_POST["content"])) {

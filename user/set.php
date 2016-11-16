@@ -1,11 +1,11 @@
 <?php
-    require '../core/lib/security/secure.php';
-    require '../core/lib/security/database.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/secure.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/database.php';
 
-    session_start();
+    if (!isset($_SESSION)) session_start();
 
     $action="SET";
-    require '../core/lib/security/storagelog.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/core/lib/security/storagelog.php';
 
     //Make sure all required variables exist
     if(isset($_SESSION["username"])&&isset($_SESSION["password"])&&isset($_SESSION["id"])&&isset($_SESSION["ip"])&&isset($_POST["path"])&&isset($_POST["content"])) {
@@ -26,11 +26,11 @@
 
                 if(strpos(implode("", $array), ".")===false) {
                     $lit_path=implode("/", $array);
-                    $path="./storage/$id".$lit_path;
+                    $path=$_SERVER["DOCUMENT_ROOT"]."/user/storage/$id".$lit_path;
                     if(!file_exists($path)) {
                         mkdir($path, 0777, true);
                     }
-                    file_put_contents("./storage/$id".$_POST["path"], $encrypted);
+                    file_put_contents($_SERVER["DOCUMENT_ROOT"]."/user/storage/$id".$_POST["path"], $encrypted);
                 }
                 else {
                     echo "INVALID REQUEST!";

@@ -1,11 +1,11 @@
 <?php
-    require '../core/lib/security/secure.php';
-    require '../core/lib/security/database.php';
+    require $_SERVER["DOCUMENT_ROOT"].'/core/lib/security/secure.php';
+    require $_SERVER["DOCUMENT_ROOT"].'/core/lib/security/database.php';
 
     session_start();
 
     $action="GET";
-    require '../core/lib/security/storagelog.php';
+    require $_SERVER["DOCUMENT_ROOT"].'/core/lib/security/storagelog.php';
 
     //See what content-type to use
     if(isset($_GET["content_type"])) {
@@ -24,10 +24,11 @@
                 echo decrypt($contents, $_SESSION["enckey"], $_SESSION["enciv"]);
             }
             else {
-                echo "INVALID REQUEST!";
-                $uid=$_SESSION["id"];
-                $sql="INSERT INTO `storage_warnings` (`user`, `path`, `realpath`, `attempt`) VALUES ($uid, '$path', '".gettype(realpath($path))."', 'GET')";
-                $server->query($sql);
+                // echo "INVALID REQUEST!";
+                // $uid=$_SESSION["id"];
+                // $sql="INSERT INTO `storage_warnings` (`user`, `path`, `realpath`, `attempt`) VALUES ($uid, '$path', '".gettype(realpath($path))."', 'GET')";
+                // $server->query($sql);
+                echo ""; //?
             }
         }
     }

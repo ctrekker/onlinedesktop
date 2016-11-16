@@ -1,5 +1,7 @@
-
 var System={
+    config: {
+        appname: "Default"
+    },
     println: function(txt) {
         postMessage({
             action: "System.println",
@@ -8,6 +10,29 @@ var System={
     },
     sendRaw: function(data) {
         postMessage(data);
+    },
+    setVal: function(key, val) {
+        var result;
+        System.ajax.post("/user/app/private.php", {
+            appname: System.config.appname,
+            key: key,
+            value: val,
+            action: "SET"
+        }, function(e) {
+            result=e;
+        }, false);
+        return result;
+    },
+    getVal: function(key) {
+        var result;
+        System.ajax.post("/user/app/private.php", {
+            appname: System.config.appname,
+            key: key,
+            action: "GET"
+        }, function(e) {
+            result=e;
+        }, false);
+        return result;
     },
     favor: function (primary, secondary) {
         return (typeof primary=="undefined"?(typeof secondary=="function"?secondary():secondary):primary);
@@ -58,6 +83,10 @@ var System={
         });
     },
     allWindows: [],
+    defined: function(var0) {
+        if(typeof var0!="undefined") return true;
+        return false;
+    },
     defaultAddEventListener: function(name, callback) {
         if(typeof this.event[name]=="undefined") this.event[name]=[];
         this.event[name].push(callback);
@@ -247,6 +276,12 @@ function Text(text, x, y, data, fc, sc, ss) {
     this.type=shape.type;
     this.data=shape.data;
 }
+Text.prototype.getText=function() {
+    return this.data.w;
+}
+Text.prototype.setText=function(text) {
+    this.data.w=text;
+}
 var TextAlign={
     START: "start",
     END: "end",
@@ -264,6 +299,36 @@ var TextBaseline={
 Text.FONT="12px Arial";
 Text.BASELINE=TextBaseline.TOP;
 Text.ALIGN=TextAlign.LEFT;
+function Color(params) {
+    if(typeof params=="string") {
+        this.data=params;
+        this.hex=params;
+    }
+    else if(typeof params=="object") {
+        if(System.defined(params.r)&&System.defined(params.g)&&System.defined(params.b)) {
+            //Convert rgb to hex
+
+            function componentToHex(c) {
+                var hex = c.toString(16);
+                return hex.length == 1 ? "0" + hex : hex;
+            }
+
+            this.hex="#" + componentToHex(params.r) + componentToHex(params.g) + componentToHex(params.b);
+            this.data=this.hex;
+            this.rgb=params;
+        }
+    }
+}
+Color.BLACK=new Color("#000");
+Color.WHITE=new Color("#FFF");
+Color.RED=new Color("#F00");
+Color.ORANGE=new Color("#F90");
+Color.YELLOW=new Color("#FF0");
+Color.GREEN=new Color("#0F0");
+Color.BLUE=new Color("#00F");
+Color.CYAN=new Color("#0FF");
+Color.PURPLE=new Color("#800080");
+Color.MAGNETA=new Color("#F0F");
 function Component(sdata) {
     this.shapes=System.favor(sdata, []);
     this.id=Component.ID++;
@@ -304,7 +369,7 @@ function Button(text, x, y, w, h) {
         font: Button.FONT,
         baseline: TextBaseline.MIDDLE,
         align: TextAlign.CENTER
-    }, "#000");
+    }, Button.TEXT_FILL);
     this.component.add(box1);
     this.component.add(text);
     this.shapes=this.component.shapes;
@@ -339,11 +404,75 @@ Button.prototype.triggerEvent=Component.prototype.triggerEvent;
 
 Button.WIDTH=60;
 Button.HEIGHT=20;
-Button.FILL="#EEE";
-Button.STROKE="#888";
-Button.HOVER_STROKE="#06F";
+Button.FILL=new Color("#EEE");
+Button.STROKE=new Color("#888");
+Button.HOVER_STROKE=new Color("#06F");
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
+Button.TEXT_FILL=Color.BLACK;
+
+
+//AJAX
+var ajax = {};
+ajax.x = function () {
+    if (typeof XMLHttpRequest !== 'undefined') {
+        return new XMLHttpRequest();
+    }
+    var versions = [
+        "MSXML2.XmlHttp.6.0",
+        "MSXML2.XmlHttp.5.0",
+        "MSXML2.XmlHttp.4.0",
+        "MSXML2.XmlHttp.3.0",
+        "MSXML2.XmlHttp.2.0",
+        "Microsoft.XmlHttp"
+    ];
+
+    var xhr;
+    for (var i = 0; i < versions.length; i++) {
+        try {
+            xhr = new ActiveXObject(versions[i]);
+            break;
+        } catch (e) {
+        }
+    }
+    return xhr;
+};
+
+ajax.send = function (url, callback, method, data, async) {
+    if (async === undefined) {
+        async = true;
+    }
+    var x = ajax.x();
+    x.open(method, url, async);
+    x.onreadystatechange = function () {
+        if (x.readyState == 4) {
+            callback(x.responseText)
+        }
+    };
+    if (method == 'POST') {
+        x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    x.send(data)
+};
+
+ajax.get = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async)
+};
+
+ajax.post = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url, callback, 'POST', query.join('&'), async)
+};
+System.ajax=ajax;
+
+
 (function(){
     //delete console;
     main();

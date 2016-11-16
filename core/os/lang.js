@@ -1,5 +1,7 @@
-
 var System={
+    config: {
+        appname: "Default"
+    },
     println: function(txt) {
         postMessage({
             action: "System.println",
@@ -8,6 +10,41 @@ var System={
     },
     sendRaw: function(data) {
         postMessage(data);
+    },
+    app: {
+        setVal: function(key, val, async) {
+            if(!~key.indexOf("/")) {
+                var result;
+                System.ajax.post("/user/app/private.php", {
+                    appname: System.config.appname,
+                    key: key,
+                    value: val,
+                    action: "SET"
+                }, function(e) {
+                    result=e;
+                }, System.favor(async, false));
+                return result=="";
+            }
+            else {
+                throw (new Error("Could not save value due to illegal character in key (/)"));
+            }
+        },
+        getVal: function(key) {
+            if(!~key.indexOf("/")) {
+                var result;
+                System.ajax.post("/user/app/private.php", {
+                    appname: System.config.appname,
+                    key: key,
+                    action: "GET"
+                }, function(e) {
+                    result=e;
+                }, false);
+                return result;
+            }
+            else {
+                throw (new Error("Could not retrive value due to illegal character in key (/)"));
+            }
+        }
     },
     favor: function (primary, secondary) {
         return (typeof primary=="undefined"?(typeof secondary=="function"?secondary():secondary):primary);
@@ -385,6 +422,69 @@ Button.HOVER_STROKE=new Color("#06F");
 Button.OUTLINE=1;
 Button.FONT=Text.FONT;
 Button.TEXT_FILL=Color.BLACK;
+
+
+//AJAX
+var ajax = {};
+ajax.x = function () {
+    if (typeof XMLHttpRequest !== 'undefined') {
+        return new XMLHttpRequest();
+    }
+    var versions = [
+        "MSXML2.XmlHttp.6.0",
+        "MSXML2.XmlHttp.5.0",
+        "MSXML2.XmlHttp.4.0",
+        "MSXML2.XmlHttp.3.0",
+        "MSXML2.XmlHttp.2.0",
+        "Microsoft.XmlHttp"
+    ];
+
+    var xhr;
+    for (var i = 0; i < versions.length; i++) {
+        try {
+            xhr = new ActiveXObject(versions[i]);
+            break;
+        } catch (e) {
+        }
+    }
+    return xhr;
+};
+
+ajax.send = function (url, callback, method, data, async) {
+    if (async === undefined) {
+        async = true;
+    }
+    var x = ajax.x();
+    x.open(method, url, async);
+    x.onreadystatechange = function () {
+        if (x.readyState == 4) {
+            callback(x.responseText)
+        }
+    };
+    if (method == 'POST') {
+        x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    x.send(data)
+};
+
+ajax.get = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async)
+};
+
+ajax.post = function (url, data, callback, async) {
+    var query = [];
+    for (var key in data) {
+        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    ajax.send(url, callback, 'POST', query.join('&'), async)
+};
+System.ajax=ajax;
+
+
 (function(){
     //delete console;
     main();

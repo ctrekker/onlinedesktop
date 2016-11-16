@@ -11,28 +11,40 @@ var System={
     sendRaw: function(data) {
         postMessage(data);
     },
-    setVal: function(key, val) {
-        var result;
-        System.ajax.post("/user/app/private.php", {
-            appname: System.config.appname,
-            key: key,
-            value: val,
-            action: "SET"
-        }, function(e) {
-            result=e;
-        }, false);
-        return result;
-    },
-    getVal: function(key) {
-        var result;
-        System.ajax.post("/user/app/private.php", {
-            appname: System.config.appname,
-            key: key,
-            action: "GET"
-        }, function(e) {
-            result=e;
-        }, false);
-        return result;
+    app: {
+        setVal: function(key, val, async) {
+            if(!~key.indexOf("/")) {
+                var result;
+                System.ajax.post("/user/app/private.php", {
+                    appname: System.config.appname,
+                    key: key,
+                    value: val,
+                    action: "SET"
+                }, function(e) {
+                    result=e;
+                }, System.favor(async, false));
+                return result=="";
+            }
+            else {
+                throw (new Error("Could not save value due to illegal character in key (/)"));
+            }
+        },
+        getVal: function(key) {
+            if(!~key.indexOf("/")) {
+                var result;
+                System.ajax.post("/user/app/private.php", {
+                    appname: System.config.appname,
+                    key: key,
+                    action: "GET"
+                }, function(e) {
+                    result=e;
+                }, false);
+                return result;
+            }
+            else {
+                throw (new Error("Could not retrive value due to illegal character in key (/)"));
+            }
+        }
     },
     favor: function (primary, secondary) {
         return (typeof primary=="undefined"?(typeof secondary=="function"?secondary():secondary):primary);

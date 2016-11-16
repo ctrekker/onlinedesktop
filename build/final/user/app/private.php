@@ -1,10 +1,10 @@
 <?php
     session_start();
     
-    if(isset($_SESSION["id"])&&isset($_POST["appname"])&&isset($_POST["key"])&&isset($_POST["value"])&&isset($_POST["action"])) {
+    if(isset($_SESSION["id"])&&isset($_POST["appname"])&&isset($_POST["key"])&&isset($_POST["action"])) {
         $path0="/APPSTORAGE/".$_POST["appname"]."/";
         $filep=$path0.$_POST["key"].".osv";
-        if($_POST["action"]=="SET") {
+        if($_POST["action"]=="SET"&&isset($_POST["value"])) {
             $fullpath=$_SERVER["DOCUMENT_ROOT"]."/user/storage/".$_SESSION["id"]."/".$path0;
             if(!file_exists($fullpath)) mkdir($fullpath, 0777, true);
             
@@ -14,7 +14,7 @@
             include '../set.php';
         }
         else if($_POST["action"]=="GET") {
-            require '../get.php?path='.$filep;
+            header("Location: ../get.php?path=".$filep);
         }
     }
 ?>

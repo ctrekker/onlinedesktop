@@ -26,11 +26,11 @@
 
                 if(strpos(implode("", $array), ".")===false) {
                     $lit_path=implode("/", $array);
-                    $path="./storage/$id".$lit_path;
+                    $path=$_SERVER["DOCUMENT_ROOT"]."/user/storage/$id".$lit_path;
                     if(!file_exists($path)) {
                         mkdir($path, 0777, true);
                     }
-                    file_put_contents("./storage/$id".$_POST["path"], $encrypted);
+                    file_put_contents($_SERVER["DOCUMENT_ROOT"]."/user/storage/$id".$_POST["path"], $encrypted);
                 }
                 else {
                     echo "INVALID REQUEST!";
